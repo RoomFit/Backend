@@ -51,18 +51,18 @@ Workout.recent = (user_id, callback) => {
 Workout.brief = (user_id, recent = false, callback) => {
   var query = `
     SELECT 
-      t.workout_id,
-      t.title,
-      t.start_time,
-      t.end_time,
-      time(strftime('%s', datetime(t.end_time)) - strftime('%s', datetime(t.start_time)), 'unixepoch') AS total_time,
+      workout_id,
+      title,
+      start_time,
+      end_time,
+      time(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time)), 'unixepoch') AS total_time,
       (
         SELECT SUM(set_info.weight * set_info.rep)
         FROM set_info
         WHERE set_info.record_id IN (
           SELECT record_id
           FROM record
-          WHERE workout_id = t.workout_id
+          WHERE record.workout_id = workout.workout_id
         )
       ) AS total_weight,
       (
@@ -71,36 +71,21 @@ Workout.brief = (user_id, recent = false, callback) => {
         WHERE motion.motion_id IN (
           SELECT motion_id
           FROM record
-          WHERE workout_id = t.workout_id
+          WHERE record.workout_id = workout.workout_id
         )
       ) AS targets
-    FROM (
-      SELECT
-        w.user_id, w.title, w.start_time, w.end_time, w.workout_id,
-        s.weight, s.rep, s.record_id,
-        m.major_target, m.motion_id,
-        r.record_id
-      FROM
-        workout AS w
-        JOIN record AS r
-        ON r.workout_id = w.workout_id
-        JOIN set_info AS s
-        ON r.record_id = s.record_id
-        JOIN motion AS m
-        ON r.motion_id = m.motion_id
-      WHERE w.user_id = ?
+    FROM workout
+    WHERE user_id = ?
   `;
 
   if (recent)
-    query += `AND DATE(w.start_time) = (
+    query += `AND DATE(start_time) = (
       SELECT MAX(DATE(start_time))
       FROM workout
     )
   `;
 
-  query += `GROUP BY w.workout_id
-  ) AS t
-  ORDER BY t.start_time DESC`;
+  query += `ORDER BY start_time DESC`;
 
   db.all(query, [user_id], (err, rows) => {
     if (err) console.error(err);
@@ -166,31 +151,81 @@ Workout.delete = (workout_id, callback) => {
 
 //Statistics
 Workout.stat = (user_id, period, callback) => {
-  const condition_query = ` FROM workout WHERE user_id = ? AND julianday(date('now', 'localtime')) - julianday(date(start_time)) <= ?`;
+  const condition_query = `
+    FROM workout
+    WHERE user_id = ?
+    AND julianday(date('now', 'localtime')) - julianday(date(start_time)) <= ?`;
   const queries = {
     total_time:
       `SELECT time(SUM(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time))), 'unixepoch')` +
       condition_query,
     tut: `SELECT time(SUM(strftime('%s',tut)), 'unixepoch')` + condition_query,
-    weight:
-      `SELECT SUM(weight * rep) FROM set_info WHERE record_id IN (SELECT record_id FROM record WHERE workout_id in ( SELECT workout_id` +
-      condition_query +
-      `))`,
     count: `SELECT COUNT(*)` + condition_query,
   };
+  const weight_percentage_query = `
+    SELECT weight * rep AS weight, (
+      SELECT major_target
+      FROM motion
+      WHERE motion_id IN (
+        SELECT motion_id
+        FROM record
+        WHERE set_info.record_id = record.record_id
+      )
+    ) AS targets
+    FROM set_info
+    WHERE record_id NOT NULL
+  `;
+  var weight = 0;
+  var percent = {
+    shoulder: 0,
+    back: 0,
+    chest: 0,
+    core: 0,
+    forearm: 0,
+    upper_arm: 0,
+    leg: 0,
+    etc: 0,
+  };
+  db.all(weight_percentage_query, [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
 
-  const data = {};
-  Object.keys(queries).forEach((key, index) => {
-    const query = queries[key];
-    db.get(query, [user_id, period], (err, row) => {
-      if (err) {
-        console.error(err);
-        return;
+    for (row of rows) {
+      const target_arr = row.targets.split(', ');
+      weight += row.weight;
+      const len = target_arr.length;
+      for (tar of target_arr) {
+        if (tar == 'Waist') percent.core += row.weight / len;
+        else if (tar == 'Chest') percent.chest += row.weight / len;
+        else if (tar == 'Shoulders') percent.shoulder += row.weight / len;
+        else if (tar == 'Back') percent.back += row.weight / len;
+        else if (tar == 'Leg') percent.leg += row.weight / len;
+        else if (tar == 'Forearms') percent.forearm += row.weight / len;
+        else if (tar == 'Upper Arms') percent.upper_arm += row.weight / len;
+        else percent.etc += row.weight / len;
       }
-      data[key] = Object.values(row)[0];
-      if (Object.keys(data).length == Object.keys(queries).length) {
-        callback(null, data);
-      }
+    }
+
+    Object.keys(percent).forEach(key => {
+      percent[key] = (percent[key] / weight) * 100;
+    });
+
+    const data = {total_weight: weight, percentage: percent};
+    Object.keys(queries).forEach(key => {
+      const query = queries[key];
+      db.get(query, [user_id, period], (err, row) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        data[key] = Object.values(row)[0];
+        if (Object.keys(data).length == Object.keys(queries).length + 2) {
+          callback(null, data);
+        }
+      });
     });
   });
 };
