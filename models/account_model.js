@@ -276,8 +276,10 @@ Account.email_verification = (email, callback) => {
   const mailOptions = {
     from: process.env.GMAIL_USER,
     to: email,
-    subject: 'wispion verification number',
-    text: 'verification code : ' + verification_code,
+    subject: '[RoomFit] 이메일 인증 코드입니다.',
+    text:
+      '회원 가입을 위한 인증번호입니다.\n 아래의 인증번호를 입력하여 인증을 완료해주세요.\n' +
+      verification_code,
   };
 
   transporter.sendMail(mailOptions, function (error, res) {
@@ -354,7 +356,7 @@ Account.find_password = (email, callback) => {
           const mailOptions = {
             from: process.env.GMAIL_USER,
             to: email,
-            subject: '비밀번호 변경 링크 전송',
+            subject: '[RoomFit] 임시 비밀번호',
             text: '임시 비밀번호 : ' + tmpPassword,
           };
 
