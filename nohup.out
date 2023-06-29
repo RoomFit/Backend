@@ -1,0 +1,43 @@
+
+> backend@1.0.0 start
+> node server.js
+
+Listening on port 4000
+Connected to RoomFit Database
+Enabled Foreign Keys
+(node:4346) UnhandledPromiseRejectionWarning: AxiosError: Request failed with status code 400
+    at settle (/home/ubuntu/RoomFit/backend/node_modules/axios/dist/node/axios.cjs:1909:12)
+    at Unzip.handleStreamEnd (/home/ubuntu/RoomFit/backend/node_modules/axios/dist/node/axios.cjs:2989:11)
+    at Unzip.emit (events.js:326:22)
+    at endReadableNT (_stream_readable.js:1241:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21)
+(node:4346) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
+(node:4346) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+
+> backend@1.0.0 start
+> node server.js
+
+Listening on port 4000
+Connected to RoomFit Database
+Enabled Foreign Keys
+npm ERR! path /home/ubuntu/RoomFit/backend
+npm ERR! command failed
+npm ERR! signal SIGHUP
+npm ERR! command sh -c node server.js
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/ubuntu/.npm/_logs/2023-06-27T08_49_38_866Z-debug-0.log
+
+> backend@1.0.0 start
+> node server.js
+
+Listening on port 4000
+Connected to RoomFit Database
+Enabled Foreign Keys
+npm ERR! path /home/ubuntu/RoomFit/backend
+npm ERR! command failed
+npm ERR! signal SIGHUP
+npm ERR! command sh -c node server.js
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/ubuntu/.npm/_logs/2023-06-27T09_08_36_290Z-debug-0.log
