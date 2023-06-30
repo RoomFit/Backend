@@ -84,6 +84,7 @@ Workout.brief = (user_id, recent = false, callback) => {
       FROM workout
       WHERE end_time != ''
     )
+    AND end_time != ''
   `;
 
   query += `ORDER BY start_time DESC`;
