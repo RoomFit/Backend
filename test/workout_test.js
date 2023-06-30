@@ -2,10 +2,7 @@ const axios = require('axios');
 
 // // 새로운 운동 기록 생성 테스트
 // axios
-//   .post(
-//     'http://localhost:4000/workout',
-//     {user_id: 'user1'},
-//   )
+//   .post('http://localhost:4000/workout', {user_id: 'user1'})
 //   .then(res => {
 //     console.log(res);
 //   })
@@ -44,7 +41,7 @@ const axios = require('axios');
 //   });
 
 axios
-  .post('http://lcoalhost:4000/workout/brief/recent', {
+  .post('http://localhost:4000/workout/brief/recent', {
     user_id: 'user1',
   })
   .then(res => {
