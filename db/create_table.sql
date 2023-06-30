@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS set_info (
     set_no INTEGER NOT NULL,
     weight INTEGER NOT NULL,
     rep INTEGER NOT NULL,
-    mode INTEGER DEFAULT "기본모드",
+    mode TEXT DEFAULT "기본모드",
 
     FOREIGN KEY(routine_motion_id) REFERENCES routine_motion(routine_motion_id) ON DELETE CASCADE
     FOREIGN KEY(record_id) REFERENCES record(record_id) ON DELETE CASCADE
