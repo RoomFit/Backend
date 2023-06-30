@@ -13,15 +13,12 @@ const axios = require('axios');
 // // 운동 종료 테스트
 // setTimeout(() => {
 //   axios
-//     .put(
-//       'http://localhost:4000/workout/done',
-//       {
-//         workout_id: 18,
-//         tut: '00:45:00',
-//         title: '5일차 운동',
-//         memo: '균형 안 맞는듯.',
-//       },
-//     )
+//     .put('http://localhost:4000/workout/done', {
+//       workout_id: 8,
+//       tut: '00:45:00',
+//       title: '5일차 운동',
+//       memo: '균형 안 맞는듯.',
+//     })
 //     .then(res => {
 //       console.log(res);
 //     })
