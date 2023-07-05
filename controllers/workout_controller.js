@@ -98,9 +98,8 @@ const get_month_workouts = (req, res) => {
     res.status(400).send({message: 'Content can not be empty'});
   const targetMonth = req.body.month;
 
-  Workout.calender_month(req.body.user_id, targetMonth, (err,result) => {
-    if (err) console.error(err);
-    else res.json(result);
+  Workout.calender_month(req.body.user_id, targetMonth, result => {
+    res.json(result);
   });
 }
 
