@@ -7,4 +7,8 @@ const Packet = function (packet) {
     this.right = packet.right;
 }
 
+Packet.load = function(record_id, callback){
+
+}
+
 module.exports = Packet;
