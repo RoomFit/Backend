@@ -38,7 +38,7 @@ const axios = require('axios');
 //   });
 
 axios
-  .post('http://localhost:4000/workout/brief', {
+  .post('http://localhost:4000/workout/brief/recent', {
     user_id: 'user1',
   })
   .then(res => {
