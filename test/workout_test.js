@@ -38,24 +38,47 @@ const axios = require('axios');
 //   });
 
 // axios
-//   .post('http://localhost:4000/workout/brief/recent', {
+//   .post('http://127.0.0.1:4000/workout/brief/true', {
 //     user_id: 'user1',
 //   })
 //   .then(res => {
-//     console.log(res);
+//     console.log(res.data);
 //   })
 //   .catch(err => {
 //     console.error(err);
 //   });
 
-axios
-  .post('http://localhost:4000/workout/brief/recent', {
-    user_id: 'user1',
-    month: '2023-06',
-  })
-  .then(res => {
-    console.log(res.data);
-  })
-  .catch(err => {
-    console.error(err);
-  });
+// axios
+//   .post('http://127.0.0.1:4000/workout/calender/month', {
+//     user_id: 'user1',
+//     month: '2023-06'
+//   })
+//   .then(res => {
+//     console.log(res.data);
+//   })
+//   .catch(err => {
+//     console.error(err);
+//   });
+
+// axios
+//   .post('http://127.0.0.1:4000/workout/calender/date', {
+//     user_id: 'user1',
+//     date: '2023-06-29'
+//   })
+//   .then(res => {
+//     console.log(res.data);
+//   })
+//   .catch(err => {
+//     console.error(err);
+//   });
+// axios
+//   .post('http://localhost:4000/workout/brief/recent', {
+//     user_id: 'user1',
+//     month: '2023-06',
+//   })
+//   .then(res => {
+//     console.log(res.data);
+//   })
+//   .catch(err => {
+//     console.error(err);
+//   });

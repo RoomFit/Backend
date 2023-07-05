@@ -128,23 +128,52 @@ Workout.detail = (workout_id, callback) => {
 Workout.calender_date = (user_id, date, callback) => {
   const startDate = `${date} 00:00:00`;
   const endDate = `${date} 23:59:59`;
-
-  db.all(
-    `SELECT * FROM workout WHERE user_id = ? AND start_time >= ? AND start_time < ?;`,
-    [user_id, startDate, endDate],
-    (err, rows) => {
-      if (err) console.error(err);
-      callback(rows);
-    },
-  );
+  var query = `
+    SELECT 
+      workout_id,
+      title,
+      start_time,
+      end_time,
+      time(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time)), 'unixepoch') AS total_time,
+      (
+        SELECT SUM(set_info.weight * set_info.rep)
+        FROM set_info
+        WHERE set_info.record_id IN (
+          SELECT record_id
+          FROM record
+          WHERE record.workout_id = workout.workout_id
+        )
+      ) AS total_weight,
+      (
+        SELECT json_group_array(DISTINCT motion.major_target)
+        FROM motion
+        WHERE motion.motion_id IN (
+          SELECT motion_id
+          FROM record
+          WHERE record.workout_id = workout.workout_id
+        )
+      ) AS targets
+    FROM workout
+    WHERE user_id = ? AND start_time>= ? AND start_time <= ?
+  `;
+  query += `AND end_time != ''
+  ORDER BY start_time DESC`;
+  db.all(query, [user_id, startDate, endDate], (err, rows) => {
+    if (err) console.error(err);
+    else {
+      for (var i = 0; i < rows.length; i++) {
+        const target_arr = JSON.parse(rows[i].targets).join(', ').split(', ');
+        rows[i].targets = [...new Set(target_arr)];
+      }
+      console.log(rows);
+      callback(null, rows);
+    }
+  });
 };
 
 Workout.calender_month = (user_id, month, callback) => {
-  console.log(month);
   const startDate = `${month}-01 00:00:00`;
   const endDate = `${month}-31 23:59:59`;
-  console.log(startDate);
-  console.log(endDate);
   const sql = `SELECT start_time FROM workout WHERE user_id = ? AND start_time>= ? AND start_time <= ?`;
   db.all(sql,[user_id, startDate, endDate], (err, rows)  => {
     if (err) console.error(err);
