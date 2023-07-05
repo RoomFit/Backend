@@ -138,7 +138,7 @@ Workout.detail = (workout_id, callback) => {
 };
 
 //Get Workout of speicific date
-Workout.calander = (user_id, date, callback) => {
+Workout.calender_date = (user_id, date, callback) => {
   const startDate = `${date} 00:00:00`;
   const endDate = `${date} 23:59:59`;
 
@@ -150,6 +150,20 @@ Workout.calander = (user_id, date, callback) => {
       callback(rows);
     },
   );
+};
+
+Workout.calender_month = (user_id, month, callback) => {
+  console.log(month);
+  const startDate = `${month}-01 00:00:00`;
+  const endDate = `${month}-31 23:59:59`;
+  console.log(startDate);
+  console.log(endDate);
+  const sql = `SELECT start_time FROM workout WHERE user_id = ? AND start_time>= ? AND start_time <= ?`;
+  db.all(sql,[user_id, startDate, endDate], (err, rows)  => {
+    if (err) console.error(err);
+    console.log(rows);
+    callback(rows);
+  });
 };
 
 //Delete Workout

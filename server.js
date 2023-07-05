@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-const initPassport = require('./config/initPassport');
-initPassport(app);
+//const initPassport = require('./config/initPassport');
+//initPassport(app);
 
 //import routers
 const workout = require('./routes/workout_routes');

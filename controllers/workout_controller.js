@@ -87,10 +87,20 @@ const get_specific_date_workouts = (req, res) => {
     res.status(400).send({message: 'Content can not be empty'});
   const targetDate = req.params.date;
 
-  Workout.calander(req.body.user_id, targetDate, result => {
+  Workout.calender_date(req.body.user_id, targetDate, result => {
     res.json(result);
   });
 };
+
+const get_month_workouts = (req, res) => {
+  if(!req.body || !req.params)
+    res.status(400).send({message: 'Content can not be empty'});
+  const targetMonth = req.body.month;
+
+  Workout.calender_month(req.body.user_id, targetMonth, result => {
+    res.json(result);
+  });
+}
 
 const delete_workout = (req, res) => {
   if (!req.params.workout_id)
@@ -120,6 +130,7 @@ module.exports = {
   recent_workouts,
   workout_detail,
   get_specific_date_workouts,
+  get_month_workouts,
   delete_workout,
   get_stat,
 };
