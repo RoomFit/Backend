@@ -14,7 +14,7 @@ const load_packet = (req, res) => {
 
 const save_packet = (req, res) => {
     if (!req.body) res.status(400).send({message: 'Content can not be empty'});
-    Packet.save(req.body.record_id, (err, data) => {
+    Packet.save(req.body.record_id, req.body.time, req.body.left, req.body.right, (err, data) => {
         if (err){
             res
                 .status(500)
