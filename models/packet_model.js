@@ -16,7 +16,7 @@ Packet.load = function(record_id, callback){
 };
 
 Packet.save = function(record_id, time, left, right, callback){
-    const sql = 'INSERT INTO packet (record_id, time, left, right) values (?,?)';
+    const sql = 'INSERT INTO packet (record_id, time, left, right) values (?,?,?,?)';
     db.run(sql, [record_id, time, left, right], function(err, result){
         if(err) console.error(err.message);
         else callback(null, result);

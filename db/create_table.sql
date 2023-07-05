@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS favorite (
 
 CREATE TABLE IF NOT EXISTS packet (
     record_id INTEGER NOT NULL,
-    time INTEGER NOT NULL,
+    time REAL NOT NULL,
     left REAL,
     right REAL,
 
