@@ -49,9 +49,9 @@ const axios = require('axios');
 //   });
 
 axios
-  .post('http://127.0.0.1:4000/workout/calender/month', {
+  .post('http://localhost:4000/workout/brief/recent', {
     user_id: 'user1',
-    month: '2023-06'
+    month: '2023-06',
   })
   .then(res => {
     console.log(res.data);

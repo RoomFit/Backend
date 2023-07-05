@@ -50,15 +50,13 @@ Workout.recent = (user_id, callback) => {
 //Get Brief Workout Information
 Workout.brief = (user_id, recent = false, callback) => {
   var query = `
-    SELECT
-      DATE(start_time) AS date,
-      json_group_array(json_object(
-      'workout_id',workout_id,
-      'title',title,
-      'start_time',TIME(start_time),
-      'end_time',TIME(end_time),
-      'total_time',time(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time)), 'unixepoch'),
-      'total_weight',(
+    SELECT 
+      workout_id,
+      title,
+      start_time,
+      end_time,
+      time(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time)), 'unixepoch') AS total_time,
+      (
         SELECT SUM(set_info.weight * set_info.rep)
         FROM set_info
         WHERE set_info.record_id IN (
@@ -66,8 +64,8 @@ Workout.brief = (user_id, recent = false, callback) => {
           FROM record
           WHERE record.workout_id = workout.workout_id
         )
-      ),
-      'targets',(
+      ) AS total_weight,
+      (
         SELECT json_group_array(DISTINCT motion.major_target)
         FROM motion
         WHERE motion.motion_id IN (
@@ -75,8 +73,7 @@ Workout.brief = (user_id, recent = false, callback) => {
           FROM record
           WHERE record.workout_id = workout.workout_id
         )
-      )
-    )) AS data
+      ) AS targets
     FROM workout
     WHERE user_id = ?
   `;
@@ -90,21 +87,16 @@ Workout.brief = (user_id, recent = false, callback) => {
   `;
 
   query += `AND end_time != ''
-  GROUP BY DATE(start_time)
   ORDER BY start_time DESC`;
 
   db.all(query, [user_id], (err, rows) => {
     if (err) console.error(err);
     else {
       for (var i = 0; i < rows.length; i++) {
-        const gb_date = JSON.parse(rows[i].data);
-        for (var j = 0; j < gb_date.length; j++) {
-          const target_arr = gb_date[j].targets.join(', ').split(', ');
-          gb_date[j].targets = [...new Set(target_arr)];
-        }
-        rows[i].data = gb_date;
-        console.log(rows[i]);
+        const target_arr = JSON.parse(rows[i].targets).join(', ').split(', ');
+        rows[i].targets = [...new Set(target_arr)];
       }
+      console.log(rows);
       callback(null, rows);
     }
   });
