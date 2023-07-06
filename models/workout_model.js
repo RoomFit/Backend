@@ -73,7 +73,8 @@ Workout.brief = (user_id, recent = false, callback) => {
           FROM record
           WHERE record.workout_id = workout.workout_id
         )
-      ) AS targets
+      ) AS targets,
+      memo
     FROM workout
     WHERE user_id = ?
   `;
