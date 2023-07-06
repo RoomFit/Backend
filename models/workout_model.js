@@ -153,7 +153,8 @@ Workout.calender_date = (user_id, date, callback) => {
           FROM record
           WHERE record.workout_id = workout.workout_id
         )
-      ) AS targets
+      ) AS targets,
+      memo
     FROM workout
     WHERE user_id = ? AND start_time>= ? AND start_time <= ?
   `;
