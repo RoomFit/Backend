@@ -251,6 +251,22 @@ const find_password = (req, res) => {
   });
 };
 
+const change_password = (req, res) => {
+  const user_id = req.body.user_id;
+  const old_password = req.body.old_password;
+  const new_password = req.body.new_password;
+  Account.change_password(user_id, old_password, new_password, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || 'Some error occurred changing Password.',
+        success: 0,
+      });
+    else {
+      res.json({success: 1});
+    }
+  });
+};
+
 module.exports = {
   email_register,
   account_update,
@@ -262,4 +278,5 @@ module.exports = {
   email_verification,
   find_id,
   find_password,
+  change_password,
 };
