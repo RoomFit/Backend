@@ -37,16 +37,16 @@ const axios = require('axios');
 //     console.error(err);
 //   });
 
-axios
-  .post('http://127.0.0.1:4000/workout/brief/recent', {
-    user_id: 'user1',
-  })
-  .then(res => {
-    console.log(res.data);
-  })
-  .catch(err => {
-    console.error(err);
-  });
+// axios
+//   .post('http://127.0.0.1:4000/workout/brief/recent', {
+//     user_id: 'user1',
+//   })
+//   .then(res => {
+//     console.log(res.data);
+//   })
+//   .catch(err => {
+//     console.error(err);
+//   });
 
 // axios
 //   .post('http://127.0.0.1:4000/workout/calender/month', {
