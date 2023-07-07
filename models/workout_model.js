@@ -67,8 +67,6 @@ Workout.brief = (user_id, recent = false, callback) => {
         )
       ) AS total_weight,
       (
-      ) AS total_weight,
-      (
         SELECT json_group_array(DISTINCT motion.major_target)
         FROM motion
         WHERE motion.motion_id IN (
