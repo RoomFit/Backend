@@ -2824,7 +2824,6 @@ function counting(location){
             if(isUp===0 && exerMin.length === 0){
                 exerMin.push(min);
                 rep++;
-                
             }
             else if(isUp===0){
                 minAvg = exerMin.reduce((accumulator, currentValue) => {
@@ -2846,21 +2845,16 @@ function counting(location){
                     rep++;
                     console.log(rep);
                 }
-                len = exerMin.length;
-                if(len==3){
-
-                }
-                // 백엔드로 min값과 해당 min의 시간 값 전달
-                
             }
-            save_packet(min, time);
-            min = 500;
+            if(isUp===0){
+                save_packet(min, time);
+                min = 500;
+            }
             isUp = 1;
         }
         else if (tempData-location[0]>=1.0){ // 올리다가 내리는 상황으로 바뀌는 경우
             if(exerMax.length === 0){
                 exerMax.push(max);
-                
             }
             else if(isUp===1){
                 maxAvg = exerMax.reduce((accumulator, currentValue) => {
@@ -2874,9 +2868,14 @@ function counting(location){
                 }
                 tempMax = max;
             }
-            save_packet(max, time);
-            max = 0;
+            if(isUp===1){
+                save_packet(max, time);
+                max = 0;
+            }
             isUp = 0;
+        }
+        else{
+            
         }
         tempData = location[0];
     }
@@ -2886,6 +2885,7 @@ function counting(location){
         time = location[1];
     }
     else if(location[0]<min && isUp === 0){
+        console.log("..");
         min = location[0];
         time = location[1];
     }
