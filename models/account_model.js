@@ -74,7 +74,6 @@ Account.update = (new_account, callback) => {
       }
 
       if (!row) {
-        // 이미 존재하는 user_id인 경우 에러를 반환
         let error = new Error();
         error.message = '존재하지 않는 ID입니다.';
         callback(error);
@@ -276,8 +275,10 @@ Account.email_verification = (email, callback) => {
   const mailOptions = {
     from: process.env.GMAIL_USER,
     to: email,
-    subject: 'wispion verification number',
-    text: 'verification code : ' + verification_code,
+    subject: '[RoomFit] 이메일 인증 코드입니다.',
+    text:
+      '회원 가입을 위한 인증번호입니다.\n 아래의 인증번호를 입력하여 인증을 완료해주세요.\n' +
+      verification_code,
   };
 
   transporter.sendMail(mailOptions, function (error, res) {
@@ -354,7 +355,7 @@ Account.find_password = (email, callback) => {
           const mailOptions = {
             from: process.env.GMAIL_USER,
             to: email,
-            subject: '비밀번호 변경 링크 전송',
+            subject: '[RoomFit] 임시 비밀번호',
             text: '임시 비밀번호 : ' + tmpPassword,
           };
 
@@ -382,6 +383,47 @@ Account.find_password = (email, callback) => {
             transporter.close();
           });
         }
+      }
+    },
+  );
+};
+
+Account.change_password = (user_id, old_password, new_password, callback) => {
+  console.log(user_id);
+  
+  db.get(
+    `SELECT user_id, password FROM User WHERE user_id = ?`,
+    [user_id],
+    function (err, row) {
+      if (err) {
+        console.error(err);
+        callback(err);
+        return;
+      }
+      if (!row) {
+        let error = new Error();
+        error.message = '존재하지 않는 ID입니다.';
+        callback(error);
+        return;
+      }
+      if (row.password != old_password) {
+        let error = new Error();
+        error.message = '비밀번호가 일치하지 않습니다.';
+        callback(error);
+        return;
+      } else {
+        db.run(
+          `UPDATE User SET password = ? WHERE user_id = ?`,
+          [new_password, user_id],
+          function (err) {
+            if (err) {
+              console.error(err);
+              callback(err);
+              return;
+            }
+            callback(null, this.changes);
+          },
+        );
       }
     },
   );

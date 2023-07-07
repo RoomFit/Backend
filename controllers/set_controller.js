@@ -8,7 +8,9 @@ const create_set = (req, res) => {
 
   const set = new Set({
     record_id: req.body.record_id,
-    routine_motion_id: req.body.routine_motion_id,
+    routine_motion_id: req.body.routine_motion_id
+      ? req.body.routine_motion_id
+      : null,
     set_no: req.body.set_no,
     weight: req.body.weight,
     reps: req.body.reps,

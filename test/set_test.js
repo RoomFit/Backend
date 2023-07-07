@@ -4,11 +4,9 @@ const axios = require('axios');
 axios
   .post('http://localhost:4000/set', {
     record_id: 1,
-    routine_motion_id: null,
     set_no: 1,
     weight: 15,
-    rep: 10,
-    mode: 1,
+    reps: 10,
   })
   .then(res => console.log(res))
   .catch(err => console.error(err));

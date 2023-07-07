@@ -9,7 +9,7 @@ const set_controller = require('../controllers/set_controller');
 router.post('/', workout_controller.create_workout);
 //운동 중
 router.post('/record', record_controller.create_record);
-router.post('/', set_controller.create_set);
+router.post('/set', set_controller.create_set);
 //운동 종료
 router.put('/done', workout_controller.update_workout);
 
@@ -17,7 +17,8 @@ router.put('/done', workout_controller.update_workout);
 router.post('/brief', workout_controller.workout_brief);
 router.post('/brief/recent', workout_controller.workout_brief_recent);
 router.post('/recent', workout_controller.recent_workouts);
-router.post('/calander/:date', workout_controller.get_specific_date_workouts);
+router.post('/calender/date', workout_controller.get_specific_date_workouts);
+router.post('/calender/month', workout_controller.get_month_workouts);
 router.get('/detail/:workout_id', workout_controller.workout_detail);
 
 //기록 삭제

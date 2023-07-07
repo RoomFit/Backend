@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS set_info (
     set_no INTEGER NOT NULL,
     weight INTEGER NOT NULL,
     rep INTEGER NOT NULL,
-    mode INTEGER DEFAULT "기본모드",
+    mode TEXT DEFAULT "기본모드",
 
     FOREIGN KEY(routine_motion_id) REFERENCES routine_motion(routine_motion_id) ON DELETE CASCADE
     FOREIGN KEY(record_id) REFERENCES record(record_id) ON DELETE CASCADE
@@ -79,4 +79,13 @@ CREATE TABLE IF NOT EXISTS favorite (
 
     FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE
     FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS packet (
+    record_id INTEGER NOT NULL,
+    time REAL NOT NULL,
+    left REAL,
+    right REAL,
+
+    FOREIGN KEY(record_id) REFERENCES record(record_id) ON DELETE CASCADE
 );
