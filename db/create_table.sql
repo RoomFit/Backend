@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS motion (
     motion_id INTEGER PRIMARY KEY,
     motion_name TEXT NOT NULL,
-    motion_korean_name TEXT NOT NULL,
+    motion_english_name TEXT NOT NULL,
 
     major_target VARCHAR(30) NOT NULL,
     minor_target VARCHAR(30) NOT NULL,
