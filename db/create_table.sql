@@ -9,18 +9,31 @@ CREATE TABLE IF NOT EXISTS user (
     height INTEGER,
     weight INTEGER,
     experience INTEGER,
-    body_fat INTEGER
+    body_fat INTEGER,
+
+    smart_safety INTEGER,
+    smart_assist INTEGER,
+    set_break INTEGER,
+    motion_break INTEGER,
+    sleep INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS motion (
     motion_id INTEGER PRIMARY KEY,
-    motion_name VARCHAR(60) NOT NULL,
+    motion_name TEXT NOT NULL,
+    motion_korean_name TEXT NOT NULL,
+
     major_target VARCHAR(30) NOT NULL,
     minor_target VARCHAR(30) NOT NULL,
+
+    is_one_arm INTEGER DEFAULT 0,
     equipment VARCHAR(30) NOT NULL,
+
     imageUrl VARCHAR(150) DEFAULT NULL,
     description TEXT NOT NULL,
-    count INTEGER DEFAULT 0 NOT NULL
+    count INTEGER DEFAULT 0 NOT NULL,
+
+    user_id TEXT REFERENCES user(user_id) ON DELETE CASCADE DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS workout (
@@ -79,13 +92,4 @@ CREATE TABLE IF NOT EXISTS favorite (
 
     FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE
     FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS packet (
-    record_id INTEGER NOT NULL,
-    time REAL NOT NULL,
-    left REAL,
-    right REAL,
-
-    FOREIGN KEY(record_id) REFERENCES record(record_id) ON DELETE CASCADE
 );
