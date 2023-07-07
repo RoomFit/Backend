@@ -70,7 +70,7 @@ Motion.del_fav = function (user_id, motion_id, callback) {
 
 Motion.add_motion = function (motion_ids, callback) {
   const placeholders = Array(motion_ids.length).fill('?').join(',');
-  const sql = `SELECT motion_id, motion_name, imageUrl FROM motion WHERE motion_id IN (${placeholders})`;
+  const sql = `SELECT motion_id, motion_name, motion_english_name, imageUrl FROM motion WHERE motion_id IN (${placeholders})`;
   db.all(sql, motion_ids, (err, rows) => {
     if (err) console.error(err);
     else callback(null, rows);
