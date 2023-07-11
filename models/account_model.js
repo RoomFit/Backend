@@ -14,6 +14,8 @@ const Account = function (user) {
   this.weight = user.weight;
   this.experience = user.experience;
   this.body_fat = user.body_fat;
+  this.set_break = user.set_break;
+  this.motion_break = user.motion_break;
 };
 
 //Create User in email create mode
