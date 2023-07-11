@@ -53,7 +53,6 @@ const delete_routine = (req, res) => {
 
 const save_routine = (req, res) => {
   if (!req.body) res.status(400).send({message: 'Content can not be empty'});
-
   Routine.save(req.body.routine_id, req.body.motion_list, (err, result) => {
     if (err)
       res.status(500).send({
