@@ -62,10 +62,21 @@ const search_motions = (req, res) => {
   });
 };
 
+const custom_motions = (req, res) => {
+  if(!req.body) res.status(400).send({message: 'Content can not be empty'});
+  Motion.custom_motion(req.body, (err, data) => {
+    if (err){
+      res.status(500).send({message: 'Some error occurred while adding motions'});
+    }
+    res.json(data);
+  });
+}
+
 module.exports = {
   load_motions,
   add_fav_motion,
   del_fav_motion,
   add_motions,
   search_motions,
+  custom_motions,
 };
