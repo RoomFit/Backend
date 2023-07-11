@@ -154,7 +154,8 @@ Workout.stat = (user_id, period, callback) => {
   const condition_query = `
     FROM workout
     WHERE user_id = ?
-    AND julianday(date('now', 'localtime')) - julianday(date(start_time)) <= ?`;
+    AND julianday(date('now', 'localtime')) - julianday(date(start_time)) <= ?
+    AND end_time != ''`;
   const queries = {
     total_time:
       `SELECT time(SUM(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time))), 'unixepoch')` +
