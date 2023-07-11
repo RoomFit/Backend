@@ -21,8 +21,8 @@ Motion.load = function (user_id, callback) {
       const favoriteMotionIds = rows.map(row => row.motion_id);
       const placeholders = favoriteMotionIds.map(() => '?').join(',');
       const motionList = [];
-      const sqlFav = `SELECT * FROM motion WHERE motion_id IN (${placeholders}) ORDER BY count desc`;
-      db.all(sqlFav, favoriteMotionIds, (err, favRows) => {
+      const sqlFav = `SELECT * FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+      db.all(sqlFav, [...favoriteMotionIds,user_id], (err, favRows) => {
         if (err) {
           console.error(err);
         } else {
@@ -32,8 +32,8 @@ Motion.load = function (user_id, callback) {
               isFav: true
             });
           });
-          const sqlNotFav = `SELECT * FROM motion WHERE motion_id NOT IN (${placeholders}) ORDER BY count desc`;
-          db.all(sqlNotFav, favoriteMotionIds, (err, notFavRows) => {
+          const sqlNotFav = `SELECT * FROM motion WHERE motion_id NOT IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+          db.all(sqlNotFav, [...favoriteMotionIds, user_id], (err, notFavRows) => {
             if (err) {
               console.error(err);
             } else {
@@ -97,8 +97,8 @@ Motion.search_motion = function (user_id, motion_name, callback) {
       const replaceName = motion_name.replace(/[\\ ]/g, '');
       const eng = /[a-zA-Z]/;
       if(eng.test(replaceName)){
-        const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? ORDER BY count desc`;
-        db.all(sqlFav, [...favoriteMotionIds, `%${replaceName}%`], (err, favRows) => {
+        const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+        db.all(sqlFav, [...favoriteMotionIds, `%${replaceName}%`, user_id], (err, favRows) => {
           if(err) {
             console.error(err);
           }
@@ -112,8 +112,8 @@ Motion.search_motion = function (user_id, motion_name, callback) {
             
           }
         });
-        const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? ORDER BY count desc`;
-        db.all(sqlNotFav, [...favoriteMotionIds, `%${replaceName}%`], (err, notFavRows) => {
+        const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+        db.all(sqlNotFav, [...favoriteMotionIds, `%${replaceName}%`, user_id], (err, notFavRows) => {
           if(err) {
             console.error(err);
           }
@@ -130,8 +130,8 @@ Motion.search_motion = function (user_id, motion_name, callback) {
         });
       }
       else{
-        const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id IN (${placeholders}) ORDER BY count desc`;
-        db.all(sqlFav, favoriteMotionIds, (err, favRows) => {
+        const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+        db.all(sqlFav, [...favoriteMotionIds, user_id], (err, favRows) => {
           if (err) {
             console.error(err);
           } else {
@@ -178,8 +178,8 @@ Motion.search_motion = function (user_id, motion_name, callback) {
                 }
               });
             }
-            const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id NOT IN (${placeholders}) ORDER BY count desc`;
-            db.all(sqlNotFav, favoriteMotionIds, (err, notFavRows) => {
+            const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+            db.all(sqlNotFav, [...favoriteMotionIds,user_id], (err, notFavRows) => {
               if (err) {
                 console.error(err);
               } else {
