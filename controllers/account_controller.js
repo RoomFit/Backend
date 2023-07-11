@@ -39,6 +39,7 @@ const account_update = (req, res) => {
 
   const update_account = new Account({
     user_id: req.body.user_id,
+    user_name: req.body.user_name || undefined,
     birth: req.body.birth || undefined,
     gender: req.body.gender || undefined,
     height: req.body.height || undefined,
