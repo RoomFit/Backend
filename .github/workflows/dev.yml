@@ -8,7 +8,7 @@ on: # 아래 job을 실행시킬 상황
 jobs:
   deploy:
     name: deploy
-    runs-on: ubuntu:20.04 # 실행될 인스턴스 OS와 버전
+    runs-on: ubuntu-latest # 실행될 인스턴스 OS와 버전
 
     steps:
       - name: excuting remote ssh commands
