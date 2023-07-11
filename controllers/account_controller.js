@@ -45,14 +45,19 @@ const account_update = (req, res) => {
     weight: req.body.weight || undefined,
     experience: req.body.experience || undefined,
     body_fat: req.body.body_fat || undefined,
+    set_break: req.body.set_break || undefined,
+    motion_break: req.body.motion_break || undefined,
   });
 
-  Account.update(update_account, (err, data) => {
+  Account.update(update_account, (err, user_data) => {
     if (err)
       res.status(500).send({
         message: err.message || 'Some error occured while updating Workout.',
       });
-    else res.json({success: 1});
+    else {
+      user_data['success'] = 1;
+      res.json(user_data);
+    }
     // else res.send(data);
   });
 };
@@ -267,6 +272,20 @@ const change_password = (req, res) => {
   });
 };
 
+const user_info = (req, res) => {
+  const user_id = req.query.user_id;
+  Account.user_info(user_id, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || 'Some error occurred changing Password.',
+        success: 0,
+      });
+    else {
+      res.json(data);
+    }
+  });
+};
+
 module.exports = {
   email_register,
   account_update,
@@ -279,4 +298,5 @@ module.exports = {
   find_id,
   find_password,
   change_password,
+  user_info,
 };
