@@ -119,6 +119,11 @@ Account.update = (new_account, callback) => {
         updateParams.push(new_account.motion_break);
       }
 
+      if (new_account.user_name) {
+        updateQuery += ' user_name = ?,';
+        updateParams.push(new_account.user_name);
+      }
+
       // 마지막 콤마 제거
       updateQuery = updateQuery.slice(0, -1);
       // user_id 추가
