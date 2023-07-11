@@ -8,4 +8,5 @@ router.post('/add', motion_controller.add_motions);
 router.post('/favInsert', motion_controller.add_fav_motion);
 router.post('/favDelete', motion_controller.del_fav_motion);
 router.post('/search', motion_controller.search_motions);
+router.post('/custom', motion_controller.custom_motions);
 module.exports = router;

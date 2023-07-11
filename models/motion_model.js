@@ -68,6 +68,14 @@ Motion.del_fav = function (user_id, motion_id, callback) {
   });
 };
 
+Motion.custom_motion = function (body, callback) {
+  const sql = 'INSERT INTO motion (user_id, motion_name, motion_english_name,major_target,minor_target,is_one_arm,equipment,description) values (?,?,?,?,?,?,?,?)';
+  db.run(sql, [body.user_id, body.motion_name, body.motion_name,body.major_target, body.minor_target,body.is_one_arm, body.equipment, body.description], function(err, result){
+    if(err) console.error(err.message);
+    else callback(null, result);
+  });
+}
+
 Motion.add_motion = function (motion_ids, callback) {
   const placeholders = Array(motion_ids.length).fill('?').join(',');
   const sql = `SELECT motion_id, motion_name, motion_english_name, imageUrl FROM motion WHERE motion_id IN (${placeholders})`;
