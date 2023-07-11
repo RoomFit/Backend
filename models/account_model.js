@@ -64,7 +64,7 @@ Account.update = (new_account, callback) => {
   const user_id = new_account.user_id;
   console.log(new_account);
   db.get(
-    `SELECT user_id, email FROM User WHERE user_id = ?`,
+    `SELECT * FROM User WHERE user_id = ?`,
     [user_id],
     function (err, row) {
       if (err) {
@@ -109,6 +109,16 @@ Account.update = (new_account, callback) => {
         updateParams.push(new_account.body_fat);
       }
 
+      if (new_account.set_break) {
+        updateQuery += ' set_break = ?,';
+        updateParams.push(new_account.set_break);
+      }
+
+      if (new_account.motion_break) {
+        updateQuery += ' motion_break = ?,';
+        updateParams.push(new_account.motion_break);
+      }
+
       // 마지막 콤마 제거
       updateQuery = updateQuery.slice(0, -1);
       // user_id 추가
@@ -122,7 +132,7 @@ Account.update = (new_account, callback) => {
           return;
         }
         // Successful update
-        callback(null, res);
+        callback(null, row);
       });
     },
   );
@@ -390,7 +400,7 @@ Account.find_password = (email, callback) => {
 
 Account.change_password = (user_id, old_password, new_password, callback) => {
   console.log(user_id);
-  
+
   db.get(
     `SELECT user_id, password FROM User WHERE user_id = ?`,
     [user_id],
@@ -424,6 +434,28 @@ Account.change_password = (user_id, old_password, new_password, callback) => {
             callback(null, this.changes);
           },
         );
+      }
+    },
+  );
+};
+
+Account.user_info = (user_id, callback) => {
+  db.get(
+    `SELECT * FROM User WHERE user_id = ?`,
+    [user_id],
+    function (err, row) {
+      if (err) {
+        console.error(err);
+        callback(err);
+        return;
+      }
+      if (!row) {
+        let error = new Error();
+        error.message = '존재하지 않는 ID입니다.';
+        callback(error);
+        return;
+      } else {
+        callback(null, row);
       }
     },
   );

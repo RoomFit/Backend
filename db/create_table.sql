@@ -11,11 +11,8 @@ CREATE TABLE IF NOT EXISTS user (
     experience INTEGER,
     body_fat INTEGER,
 
-    smart_safety INTEGER,
-    smart_assist INTEGER,
     set_break INTEGER,
-    motion_break INTEGER,
-    sleep INTEGER
+    motion_break INTEGER, 
 );
 
 CREATE TABLE IF NOT EXISTS motion (
