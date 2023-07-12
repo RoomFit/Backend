@@ -49,7 +49,7 @@ const account_update = (req, res) => {
     set_break: req.body.set_break || undefined,
     motion_break: req.body.motion_break || undefined,
   });
-
+  console.log(update_account);
   Account.update(update_account, (err, user_data) => {
     if (err)
       res.status(500).send({
