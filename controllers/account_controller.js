@@ -191,7 +191,7 @@ const google_auth_passport = async (req, res) => {
 
 const kakao_auth_passport = async (req, res) => {
   const account = new Account({
-    user_id: req.user.id,
+    user_id: req.user.id.toString(),
     user_name: req.user.kakao_account.profile.nickname,
     email: req.user.kakao_account.email,
     is_api: '2',
