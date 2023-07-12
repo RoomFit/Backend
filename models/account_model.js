@@ -14,6 +14,8 @@ const Account = function (user) {
   this.weight = user.weight;
   this.experience = user.experience;
   this.body_fat = user.body_fat;
+  this.set_break= user.set_break;
+  this.motion_break= user.motion_break;
 };
 
 //Create User in email create mode
@@ -62,7 +64,7 @@ Account.create = (new_user, callback) => {
 
 Account.update = (new_account, callback) => {
   const user_id = new_account.user_id;
-  console.log(new_account);
+  //console.log(new_account);
   db.get(
     `SELECT * FROM User WHERE user_id = ?`,
     [user_id],
@@ -137,6 +139,7 @@ Account.update = (new_account, callback) => {
           return;
         }
         // Successful update
+        //console.log(row);
         callback(null, row);
       });
     },
