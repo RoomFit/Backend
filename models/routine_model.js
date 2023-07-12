@@ -89,7 +89,7 @@ Routine.detail = function (routine_id, callback) {
                 set_info.mode
                FROM routine_motion INNER JOIN routine ON routine.routine_id = routine_motion.routine_id
                INNER JOIN set_info ON set_info.routine_motion_id = routine_motion.routine_motion_id
-               WHERE routine_motion.routine_id = ? order by set_order asc`;
+               WHERE routine_motion.routine_id = ? order by set_order, set_no`;
   db.all(sql, routine_id, (err, rows) => {
     if (err) {
       console.error(err.message);
