@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS Feed (
     feed_id INTEGER PRIMARY KEY,
     user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
-    content TEXT,
+    feed_content TEXT,
     imageUrl TEXT,
     created_at datetime,
     updated_at datetime,
