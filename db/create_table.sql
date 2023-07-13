@@ -15,6 +15,16 @@ CREATE TABLE IF NOT EXISTS user (
     motion_break INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS Feed (
+    feed_id INTEGER PRIMARY KEY,
+    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
+    feed_content TEXT,
+    imageUrl TEXT,
+    created_at datetime,
+    updated_at datetime,
+    like_count INTEGER DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS motion (
     motion_id INTEGER PRIMARY KEY,
     motion_name TEXT NOT NULL,
