@@ -35,4 +35,18 @@ Feed.create = (new_feed, callback) => {
   });
 };
 
+Feed.getAll = callback => {
+  db.serialize(() => {
+    db.all('SELECT * FROM feed', (err, rows) => {
+      if (err) {
+        console.log('error: ', err);
+        callback(err, null);
+        return;
+      } else {
+        console.log(rows);
+        callback(null, rows);
+      }
+    });
+  });
+};
 module.exports = Feed;
