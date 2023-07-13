@@ -37,16 +37,19 @@ Feed.create = (new_feed, callback) => {
 
 Feed.getAll = callback => {
   db.serialize(() => {
-    db.all('SELECT * FROM feed', (err, rows) => {
-      if (err) {
-        console.log('error: ', err);
-        callback(err, null);
-        return;
-      } else {
-        console.log(rows);
-        callback(null, rows);
-      }
-    });
+    db.all(
+      'SELECT feed.feed_id, feed.feed_content, feed.imageUrl, feed.created_at, feed.updated_at, feed.like_count, user.user_name FROM feed JOIN user ON feed.user_id = user.user_id;',
+      (err, rows) => {
+        if (err) {
+          console.log('error: ', err);
+          callback(err, null);
+          return;
+        } else {
+          console.log(rows);
+          callback(null, rows);
+        }
+      },
+    );
   });
 };
 module.exports = Feed;
