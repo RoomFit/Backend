@@ -20,34 +20,58 @@ Motion.load = function (user_id, callback) {
     } else {
       const favoriteMotionIds = rows.map(row => row.motion_id);
       const placeholders = favoriteMotionIds.map(() => '?').join(',');
-      const motionList = [];
-      const sqlFav = `SELECT * FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
-      db.all(sqlFav, [...favoriteMotionIds,user_id], (err, favRows) => {
-        if (err) {
-          console.error(err);
-        } else {
-          favRows.forEach(row => {
-            motionList.push({
-              ...row,
-              isFav: true
+      const fetchData = async () => {
+        try{
+          const sqlFav = `SELECT * FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+          const favRows = await new Promise((resolve,reject) => {
+            db.all(sqlFav, [...favoriteMotionIds,user_id], (err,favRows) => {
+              if(err){
+                reject(err);
+              } else{
+                resolve(favRows);
+              }
             });
           });
           const sqlNotFav = `SELECT * FROM motion WHERE motion_id NOT IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
-          db.all(sqlNotFav, [...favoriteMotionIds, user_id], (err, notFavRows) => {
-            if (err) {
-              console.error(err);
-            } else {
-              notFavRows.forEach(row => {
-              motionList.push({
-                ...row,
-                isFav: false
-              });
-            });
-              callback(null, motionList);
-            }
+          const notFavRows = await new Promise((resolve, reject) => {
+            db.all(sqlNotFav, [...favoriteMotionIds, user_id], (err, notFavRows) => {
+              if(err){
+                reject(err);
+              } else {
+                resolve(notFavRows)
+              }
+            })
           });
+          const fetchMotionRange = async (row) => {
+            const sqlMotionRange = `SELECT motion_range_min, motion_range_max FROM motion_range WHERE motion_id = ? AND user_id = ?`;
+            const motion_range = await new Promise((resolve,reject) => {
+              db.get(sqlMotionRange, [row.motion_id, user_id], (err, motion_range) => {
+                if(err){
+                  reject(err);
+                } else{
+                  resolve(motion_range);
+                }
+              })
+            });
+            return {
+              ...row,
+              motion_range_min: motion_range?motion_range.motion_range_min:null,
+              motion_range_max: motion_range?motion_range.motion_range_max:null,
+            };
+          };
+          const favMotionList = await Promise.all(favRows.map(fetchMotionRange));
+          const notFavMotionList = await Promise.all(notFavRows.map(fetchMotionRange));
+          console.log(favMotionList);
+          console.log(notFavMotionList);
+          const motionList = [...favMotionList.map((row) => ({...row, isFav:true})), ...notFavMotionList.map((row) => ({...row, isFav: false}))];
+          console.log(motionList);
+          callback(null, motionList);
+        } catch(err){
+          console.error(err);
+          callback(err);
         }
-      });
+      };
+      fetchData();
     }
   });
 };
