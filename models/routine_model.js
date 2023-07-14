@@ -122,8 +122,8 @@ Routine.detail = function (routine_id, callback) {
                 motion_name: motionRows[0].motion_name,
                 imageUrl: motionRows[0].imageUrl,
                 sets: [],
-                motion_range_min: null,
-                motion_range_max: null,
+                motion_range_min: -1,
+                motion_range_max: -1,
               });
             }
 
@@ -146,8 +146,8 @@ Routine.detail = function (routine_id, callback) {
                     console.error(err);
                   } else {
                     console.log(motion_range);
-                    list.motion_range_min = motion_range?motion_range.motion_range_min:null;
-                    list.motion_range_max = motion_range?motion_range.motion_range_max:null;
+                    list.motion_range_min = motion_range?motion_range.motion_range_min:-1;
+                    list.motion_range_max = motion_range?motion_range.motion_range_max:-1;
                     count++;
                     console.log(datas.motionList.length);
                     console.log(count);
