@@ -101,6 +101,16 @@ CREATE TABLE IF NOT EXISTS favorite (
     FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS motion_range(
+    user_id TEXT NOT NULL,
+    motion_id INTEGER NOT NULL,
+    motion_range_min INTEGER,
+    motion_range_max INTEGER,
+
+    FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE 
+);
+
 CREATE TABLE IF NOT EXISTS packet (
     record_id INTEGER NOT NULL,
     time REAL NOT NULL,
