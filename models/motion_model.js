@@ -55,8 +55,8 @@ Motion.load = function (user_id, callback) {
             });
             return {
               ...row,
-              motion_range_min: motion_range?motion_range.motion_range_min:null,
-              motion_range_max: motion_range?motion_range.motion_range_max:null,
+              motion_range_min: motion_range?motion_range.motion_range_min:-1,
+              motion_range_max: motion_range?motion_range.motion_range_max:-1,
             };
           };
           const favMotionList = await Promise.all(favRows.map(fetchMotionRange));
@@ -159,8 +159,8 @@ Motion.search_motion = function (user_id, motion_name, callback) {
         
               return {
                 ...row,
-                motion_range_min: motion_range? motion_range.motion_range_min:null,
-                motion_range_max: motion_range? motion_range.motion_range_max:null,
+                motion_range_min: motion_range? motion_range.motion_range_min:-1,
+                motion_range_max: motion_range? motion_range.motion_range_max:-1,
               };
             };
         
@@ -303,8 +303,8 @@ Motion.search_motion = function (user_id, motion_name, callback) {
         
               return {
                 ...row,
-                motion_range_min: motion_range? motion_range.motion_range_min:null,
-                motion_range_max: motion_range? motion_range.motion_range_max:null,
+                motion_range_min: motion_range? motion_range.motion_range_min:-1,
+                motion_range_max: motion_range? motion_range.motion_range_max:-1,
               };
             };
             const motionList = await Promise.all(tempMotionList.map(fetchMotionRange));
