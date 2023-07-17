@@ -222,7 +222,7 @@ Workout.stat = (user_id, period, callback) => {
       )
     ) AS targets
     FROM set_info
-    WHERE record_id NOT NULL
+    WHERE record_id NOT NULL AND record_id IN (SELECT record_id FROM record WHERE workout_id IN (SELECT workout_id FROM workout WHERE user_id = ?))
   `;
   var weight = 0;
   var percent = {
