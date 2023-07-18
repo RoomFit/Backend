@@ -235,7 +235,7 @@ Workout.stat = (user_id, period, callback) => {
     leg: 0,
     etc: 0,
   };
-  db.all(weight_percentage_query, [], (err, rows) => {
+  db.all(weight_percentage_query, [user_id], (err, rows) => {
     if (err) {
       console.error(err);
       return;
