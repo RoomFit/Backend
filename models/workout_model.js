@@ -79,7 +79,7 @@ Workout.brief = (user_id, recent = false, callback) => {
     FROM workout
     WHERE user_id = ?
   `;
-  const user_ids = [user_id];
+  let user_ids = [user_id];
   if (recent){
     query += `AND DATE(start_time) = (
       SELECT MAX(DATE(start_time))
@@ -92,7 +92,7 @@ Workout.brief = (user_id, recent = false, callback) => {
   query += `AND end_time != ''
   ORDER BY start_time DESC`;
 
-  db.all(query, [user_ids], (err, rows) => {
+  db.all(query, user_ids, (err, rows) => {
     if (err) console.error(err);
     else {
       for (var i = 0; i < rows.length; i++) {
