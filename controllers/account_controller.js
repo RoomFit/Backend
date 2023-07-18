@@ -39,6 +39,7 @@ const account_update = (req, res) => {
 
   const update_account = new Account({
     user_id: req.body.user_id,
+    user_name: req.body.user_name || undefined,
     birth: req.body.birth || undefined,
     gender: req.body.gender || undefined,
     height: req.body.height || undefined,
@@ -48,7 +49,7 @@ const account_update = (req, res) => {
     set_break: req.body.set_break || undefined,
     motion_break: req.body.motion_break || undefined,
   });
-
+  console.log(update_account);
   Account.update(update_account, (err, user_data) => {
     if (err)
       res.status(500).send({
@@ -190,7 +191,7 @@ const google_auth_passport = async (req, res) => {
 
 const kakao_auth_passport = async (req, res) => {
   const account = new Account({
-    user_id: req.user.id,
+    user_id: req.user.id.toString(),
     user_name: req.user.kakao_account.profile.nickname,
     email: req.user.kakao_account.email,
     is_api: '2',

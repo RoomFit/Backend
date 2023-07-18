@@ -20,34 +20,58 @@ Motion.load = function (user_id, callback) {
     } else {
       const favoriteMotionIds = rows.map(row => row.motion_id);
       const placeholders = favoriteMotionIds.map(() => '?').join(',');
-      const motionList = [];
-      const sqlFav = `SELECT * FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
-      db.all(sqlFav, [...favoriteMotionIds,user_id], (err, favRows) => {
-        if (err) {
-          console.error(err);
-        } else {
-          favRows.forEach(row => {
-            motionList.push({
-              ...row,
-              isFav: true
+      const fetchData = async () => {
+        try{
+          const sqlFav = `SELECT * FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+          const favRows = await new Promise((resolve,reject) => {
+            db.all(sqlFav, [...favoriteMotionIds,user_id], (err,favRows) => {
+              if(err){
+                reject(err);
+              } else{
+                resolve(favRows);
+              }
             });
           });
           const sqlNotFav = `SELECT * FROM motion WHERE motion_id NOT IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
-          db.all(sqlNotFav, [...favoriteMotionIds, user_id], (err, notFavRows) => {
-            if (err) {
-              console.error(err);
-            } else {
-              notFavRows.forEach(row => {
-              motionList.push({
-                ...row,
-                isFav: false
-              });
-            });
-              callback(null, motionList);
-            }
+          const notFavRows = await new Promise((resolve, reject) => {
+            db.all(sqlNotFav, [...favoriteMotionIds, user_id], (err, notFavRows) => {
+              if(err){
+                reject(err);
+              } else {
+                resolve(notFavRows)
+              }
+            })
           });
+          const fetchMotionRange = async (row) => {
+            const sqlMotionRange = `SELECT motion_range_min, motion_range_max FROM motion_range WHERE motion_id = ? AND user_id = ?`;
+            const motion_range = await new Promise((resolve,reject) => {
+              db.get(sqlMotionRange, [row.motion_id, user_id], (err, motion_range) => {
+                if(err){
+                  reject(err);
+                } else{
+                  resolve(motion_range);
+                }
+              })
+            });
+            return {
+              ...row,
+              motion_range_min: motion_range?motion_range.motion_range_min:-1,
+              motion_range_max: motion_range?motion_range.motion_range_max:-1,
+            };
+          };
+          const favMotionList = await Promise.all(favRows.map(fetchMotionRange));
+          const notFavMotionList = await Promise.all(notFavRows.map(fetchMotionRange));
+          console.log(favMotionList);
+          console.log(notFavMotionList);
+          const motionList = [...favMotionList.map((row) => ({...row, isFav:true})), ...notFavMotionList.map((row) => ({...row, isFav: false}))];
+          console.log(motionList);
+          callback(null, motionList);
+        } catch(err){
+          console.error(err);
+          callback(err);
         }
-      });
+      };
+      fetchData();
     }
   });
 };
@@ -93,57 +117,90 @@ Motion.search_motion = function (user_id, motion_name, callback) {
     } else {
       const favoriteMotionIds = rows.map(row => row.motion_id);
       const placeholders = favoriteMotionIds.map(() => '?').join(',');
-      const motionList = [];
+      const tempMotionList = [];
       const replaceName = motion_name.replace(/[\\ ]/g, '');
       const eng = /[a-zA-Z]/;
       if(eng.test(replaceName)){
-        const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
-        db.all(sqlFav, [...favoriteMotionIds, `%${replaceName}%`, user_id], (err, favRows) => {
-          if(err) {
-            console.error(err);
-          }
-          else{
-            favRows.forEach(row => {
-              motionList.push({
-                ...row,
-                isFav: true
+        const fetchData = async () => {
+          try {
+            const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+            const favRows = await new Promise((resolve, reject) => {
+              db.all(sqlFav, [...favoriteMotionIds, `%${replaceName}%`, user_id], (err, favRows) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(favRows);
+                }
               });
             });
-            
-          }
-        });
-        const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
-        db.all(sqlNotFav, [...favoriteMotionIds, `%${replaceName}%`, user_id], (err, notFavRows) => {
-          if(err) {
-            console.error(err);
-          }
-          else{
-            notFavRows.forEach(row => {
-              motionList.push({
-                ...row,
-                isFav: false
+        
+            const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+            const notFavRows = await new Promise((resolve, reject) => {
+              db.all(sqlNotFav, [...favoriteMotionIds, `%${replaceName}%`, user_id], (err, notFavRows) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(notFavRows);
+                }
               });
             });
+        
+            const fetchMotionRange = async (row) => {
+              const sqlMotionRange = `SELECT motion_range_min, motion_range_max FROM motion_range WHERE motion_id = ? AND user_id = ?`;
+              const motion_range = await new Promise((resolve, reject) => {
+                db.get(sqlMotionRange, [row.motion_id, user_id], (err, motion_range) => {
+                  if (err) {
+                    reject(err);
+                  } else {
+                    resolve(motion_range);
+                  }
+                });
+              });
+        
+              return {
+                ...row,
+                motion_range_min: motion_range? motion_range.motion_range_min:-1,
+                motion_range_max: motion_range? motion_range.motion_range_max:-1,
+              };
+            };
+        
+            const favMotionList = await Promise.all(favRows.map(fetchMotionRange));
+            const notFavMotionList = await Promise.all(notFavRows.map(fetchMotionRange));
+        
+            const motionList = [...favMotionList.map((row) => ({ ...row, isFav: true })), ...notFavMotionList.map((row) => ({ ...row, isFav: false }))];
+        
             console.log(motionList);
             callback(null, motionList);
+          } catch (err) {
+            console.error(err);
+            callback(err);
           }
-        });
+        };
+        
+        fetchData();
       }
       else{
-        const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
-        db.all(sqlFav, [...favoriteMotionIds, user_id], (err, favRows) => {
-          if (err) {
-            console.error(err);
-          } else {
-            if(replaceName.length===0){
+        const fetchData = async () => {
+          try {
+            const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+            const favRows = await new Promise((resolve, reject) => {
+              db.all(sqlFav, [...favoriteMotionIds, user_id], (err, favRows) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(favRows);
+                }
+              });
+            });
+        
+            if (replaceName.length === 0) {
               favRows.forEach(row => {
-                motionList.push({
+                tempMotionList.push({
                   ...row,
                   isFav: true
                 });
               });
-            }
-            else if (Hangul.isConsonantAll(replaceName)) {
+            } else if (Hangul.isConsonantAll(replaceName)) {
               favRows.forEach(row => {
                 const dbMotionName = Hangul.disassemble(
                   row.motion_name.replace(/ /g, ''),
@@ -157,7 +214,7 @@ Motion.search_motion = function (user_id, motion_name, callback) {
                   }
                 }
                 if (Hangul.rangeSearch(dbCho, replaceName).length != 0) {
-                  motionList.push({
+                  tempMotionList.push({
                     ...row,
                     isFav: true
                   });
@@ -171,66 +228,96 @@ Motion.search_motion = function (user_id, motion_name, callback) {
                     replaceName,
                   ).length != 0
                 ) {
-                  motionList.push({
+                  tempMotionList.push({
                     ...row,
                     isFav: true
                   });
                 }
               });
             }
+        
             const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, imageUrl, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
-            db.all(sqlNotFav, [...favoriteMotionIds,user_id], (err, notFavRows) => {
-              if (err) {
-                console.error(err);
-              } else {
-                if(replaceName.length===0){
-                  notFavRows.forEach(row => {
-                    motionList.push({
-                      ...row,
-                      isFav: false
-                    });
-                  });
-                }
-                else if (Hangul.isConsonantAll(replaceName)) {
-                  notFavRows.forEach(row => {
-                    const dbMotionName = Hangul.disassemble(
-                      row.motion_name.replace(/ /g, ''),
-                    );
-                    let dbCho = [];
-                    for (let i = 1; i < dbMotionName.length; i++) {
-                      if (Hangul.isVowel(dbMotionName[i])) {
-                        if (Hangul.isCho(dbMotionName[i - 1])) {
-                          dbCho += dbMotionName[i - 1];
-                        }
-                      }
-                    }
-                    if (Hangul.rangeSearch(dbCho, replaceName).length != 0) {
-                      motionList.push({
-                        ...row,
-                        isFav: false
-                      });
-                    }
-                  });
+            const notFavRows = await new Promise((resolve, reject) => {
+              db.all(sqlNotFav, [...favoriteMotionIds, user_id], (err, notFavRows) => {
+                if (err) {
+                  reject(err);
                 } else {
-                  notFavRows.forEach(row => {
-                    if (
-                      Hangul.rangeSearch(
-                        row.motion_name.replace(/ /g, ''),
-                        replaceName,
-                      ).length != 0
-                    ) {
-                      motionList.push({
-                        ...row,
-                        isFav: false
-                      });
+                  resolve(notFavRows);
+                }
+              });
+            });
+        
+            if (replaceName.length === 0) {
+              notFavRows.forEach(row => {
+                tempMotionList.push({
+                  ...row,
+                  isFav: false
+                });
+              });
+            } else if (Hangul.isConsonantAll(replaceName)) {
+              notFavRows.forEach(row => {
+                const dbMotionName = Hangul.disassemble(
+                  row.motion_name.replace(/ /g, ''),
+                );
+                let dbCho = [];
+                for (let i = 1; i < dbMotionName.length; i++) {
+                  if (Hangul.isVowel(dbMotionName[i])) {
+                    if (Hangul.isCho(dbMotionName[i - 1])) {
+                      dbCho += dbMotionName[i - 1];
                     }
+                  }
+                }
+                if (Hangul.rangeSearch(dbCho, replaceName).length != 0) {
+                  tempMotionList.push({
+                    ...row,
+                    isFav: false
                   });
                 }
-                callback(null, motionList);
-              }
-            });
+              });
+            } else {
+              notFavRows.forEach(row => {
+                if (
+                  Hangul.rangeSearch(
+                    row.motion_name.replace(/ /g, ''),
+                    replaceName,
+                  ).length != 0
+                ) {
+                  tempMotionList.push({
+                    ...row,
+                    isFav: false
+                  });
+                }
+              });
+            }
+            const fetchMotionRange = async (row) => {
+              const sqlMotionRange = `SELECT motion_range_min, motion_range_max FROM motion_range WHERE motion_id = ? AND user_id = ?`;
+              const motion_range = await new Promise((resolve, reject) => {
+                db.get(sqlMotionRange, [row.motion_id, user_id], (err, motion_range) => {
+                  if (err) {
+                    reject(err);
+                  } else {
+                    resolve(motion_range);
+                  }
+                });
+              });
+        
+              return {
+                ...row,
+                motion_range_min: motion_range? motion_range.motion_range_min:-1,
+                motion_range_max: motion_range? motion_range.motion_range_max:-1,
+              };
+            };
+            const motionList = await Promise.all(tempMotionList.map(fetchMotionRange));
+            console.log(motionList);
+            callback(null, motionList);
+          } catch (err) {
+            console.error(err);
+            callback(err);
           }
-        });
+        };
+        
+        fetchData();  
+      
       }
     }
   });

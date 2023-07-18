@@ -79,19 +79,20 @@ Workout.brief = (user_id, recent = false, callback) => {
     FROM workout
     WHERE user_id = ?
   `;
-
-  if (recent)
+  let user_ids = [user_id];
+  if (recent){
     query += `AND DATE(start_time) = (
       SELECT MAX(DATE(start_time))
       FROM workout
-      WHERE end_time != ''
+      WHERE end_time != '' AND user_id = ?
     )
   `;
-
+    user_ids.push(user_id);
+  }
   query += `AND end_time != ''
   ORDER BY start_time DESC`;
 
-  db.all(query, [user_id], (err, rows) => {
+  db.all(query, user_ids, (err, rows) => {
     if (err) console.error(err);
     else {
       for (var i = 0; i < rows.length; i++) {
@@ -177,7 +178,7 @@ Workout.calender_date = (user_id, date, callback) => {
 Workout.calender_month = (user_id, month, callback) => {
   const startDate = `${month}-01 00:00:00`;
   const endDate = `${month}-31 23:59:59`;
-  const sql = `SELECT start_time FROM workout WHERE user_id = ? AND start_time>= ? AND start_time <= ? AND end_time != ''`;
+  const sql = `SELECT start_time FROM workout WHERE user_id = ? AND start_time>= ? AND start_time <= ?`;
   db.all(sql, [user_id, startDate, endDate], (err, rows) => {
     if (err) console.error(err);
     console.log(rows);
@@ -202,8 +203,7 @@ Workout.stat = (user_id, period, callback) => {
   const condition_query = `
     FROM workout
     WHERE user_id = ?
-    AND julianday(date('now', 'localtime')) - julianday(date(start_time)) <= ?
-    AND end_time != ''`;
+    AND julianday(date('now', 'localtime')) - julianday(date(start_time)) <= ?`;
   const queries = {
     total_time:
       `SELECT time(SUM(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time))), 'unixepoch')` +
@@ -222,7 +222,7 @@ Workout.stat = (user_id, period, callback) => {
       )
     ) AS targets
     FROM set_info
-    WHERE record_id NOT NULL
+    WHERE record_id NOT NULL AND record_id IN (SELECT record_id FROM record WHERE workout_id IN (SELECT workout_id FROM workout WHERE user_id = ?))
   `;
   var weight = 0;
   var percent = {
@@ -235,7 +235,7 @@ Workout.stat = (user_id, period, callback) => {
     leg: 0,
     etc: 0,
   };
-  db.all(weight_percentage_query, [], (err, rows) => {
+  db.all(weight_percentage_query, [user_id], (err, rows) => {
     if (err) {
       console.error(err);
       return;
