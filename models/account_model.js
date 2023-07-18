@@ -8,7 +8,7 @@ const Account = function (user) {
   this.user_name = user.user_name;
   this.email = user.email;
   this.is_api = user.is_api;
-  this.birth = user.birth;
+  this.birth = user.birthday;
   this.gender = user.gender;
   this.height = user.height;
   this.weight = user.weight;
@@ -87,7 +87,7 @@ Account.update = (new_account, callback) => {
       let updateParams = [];
 
       if (new_account.birth) {
-        updateQuery += ' birth = ?,';
+        updateQuery += ' birthday = ?,';
         updateParams.push(new_account.birth);
       }
 
