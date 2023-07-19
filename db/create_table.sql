@@ -25,6 +25,22 @@ CREATE TABLE IF NOT EXISTS Feed (
     like_count INTEGER DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS Likes(
+    like_id INTEGER PRIMARY KEY,
+    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
+    feed_id INTEGER REFERENCES Feed(feed_id),-- ON DELETE CASCADE DEFAULT NULL,
+    created_at datetime,
+);
+
+CREATE TABLE IF NOT EXISTS Comment(
+    comment_id INTEGER PRIMARY KEY,
+    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
+    feed_id INTEGER REFERENCES Feed(feed_id),-- ON DELETE CASCADE DEFAULT NULL,
+    comment_content TEXT,
+    created_at datetime,
+    updated_at datetime
+);
+
 CREATE TABLE IF NOT EXISTS motion (
     motion_id INTEGER PRIMARY KEY,
     motion_name TEXT NOT NULL,

@@ -52,4 +52,96 @@ Feed.getAll = callback => {
     );
   });
 };
+
+Feed.like = (feed_id, user_id, callback) => {
+  db.serialize(() => {
+    db.run(
+      'SELECT * FROM Likes WHERE user_id = ? AND feed_id = ?',
+      user_id,
+      feed_id,
+      (err, rows) => {
+        if (err) {
+          console.log('error: ', err);
+          callback(err, null);
+          return;
+        } else {
+          if (rows.length > 0) {
+            db.run(
+              'DELETE FROM Likes WHERE user_id = ? AND feed_id = ?',
+              user_id,
+              feed_id,
+              (err, rows) => {
+                if (err) {
+                  console.log('error: ', err);
+                  callback(err, null);
+                  return;
+                } else {
+                  callback(null, 'unliked');
+                }
+              },
+            );
+          } else {
+            const created_at = new Date().toLocaleString();
+            db.run(
+              'INSERT INTO Likes (user_id,feed_id,created_at) values (?,?,?)',
+              user_id,
+              feed_id,
+              created_at,
+              function (err) {
+                if (err) {
+                  console.log('error: ', err);
+                  callback(err, null);
+                  return;
+                }
+                const likeId = this.lastID;
+                callback(null, likeId);
+              },
+            );
+          }
+        }
+      },
+    );
+  });
+};
+
+Feed.getComment = (feed_id, callback) => {
+  db.serialize(() => {
+    db.all(
+      'SELECT comment.comment_id, comment.comment_content, comment.updated_at, user.user_name FROM comment JOIN user ON comment.user_id = user.user_id WHERE comment.feed_id = ?',
+      feed_id,
+      (err, rows) => {
+        if (err) {
+          console.log('error: ', err);
+          callback(err, null);
+          return;
+        } else {
+          callback(null, rows);
+        }
+      },
+    );
+  });
+};
+
+Feed.postComment = (new_comment, callback) => {
+  db.serialize(() => {
+    db.run(
+      'INSERT INTO comment (user_id,feed_id,comment_content,created_at,updated_at) values (?,?,?,?,?)',
+      new_comment.user_id,
+      new_comment.feed_id,
+      new_comment.comment_content,
+      new_comment.created_at,
+      new_comment.updated_at,
+      function (err) {
+        if (err) {
+          console.log('error: ', err);
+          callback(err, null);
+          return;
+        }
+        const commentId = this.lastID;
+        callback(null, commentId);
+      },
+    );
+  });
+};
+
 module.exports = Feed;
