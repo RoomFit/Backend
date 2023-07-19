@@ -178,7 +178,7 @@ Workout.calender_date = (user_id, date, callback) => {
 Workout.calender_month = (user_id, month, callback) => {
   const startDate = `${month}-01 00:00:00`;
   const endDate = `${month}-31 23:59:59`;
-  const sql = `SELECT start_time FROM workout WHERE user_id = ? AND start_time>= ? AND start_time <= ?`;
+  const sql = `SELECT start_time FROM workout WHERE user_id = ? AND start_time>= ? AND start_time <= ? AND end_time != ''`;
   db.all(sql, [user_id, startDate, endDate], (err, rows) => {
     if (err) console.error(err);
     console.log(rows);
