@@ -122,4 +122,26 @@ Feed.getComment = (feed_id, callback) => {
   });
 };
 
+Feed.postComment = (new_comment, callback) => {
+  db.serialize(() => {
+    db.run(
+      'INSERT INTO comment (user_id,feed_id,comment_content,created_at,updated_at) values (?,?,?,?,?)',
+      new_comment.user_id,
+      new_comment.feed_id,
+      new_comment.comment_content,
+      new_comment.created_at,
+      new_comment.updated_at,
+      function (err) {
+        if (err) {
+          console.log('error: ', err);
+          callback(err, null);
+          return;
+        }
+        const commentId = this.lastID;
+        callback(null, commentId);
+      },
+    );
+  });
+};
+
 module.exports = Feed;

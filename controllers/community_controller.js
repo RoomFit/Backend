@@ -89,9 +89,35 @@ const get_feed_comment = (req, res) => {
   });
 };
 
+const post_comment = (req, res) => {
+  const current_date = new Date().toLocaleString();
+  const new_comment = {
+    feed_id: req.body.feed_id,
+    user_id: req.body.user_id,
+    comment_content: req.body.comment_content,
+    created_at: current_date,
+    updated_at: current_date,
+  };
+  Feed.postComment(new_comment, (err, id) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || 'Some error occurred while posting new comment.',
+        success: 0,
+      });
+    else {
+      res.json({
+        comment_id: id,
+        success: 1,
+      });
+    }
+  });
+};
+
 module.exports = {
   post_feed,
   get_feed,
   like_feed,
   get_feed_comment,
+  post_comment,
 };
