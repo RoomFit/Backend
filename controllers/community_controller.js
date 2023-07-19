@@ -46,7 +46,52 @@ const get_feed = (req, res) => {
   });
 };
 
+const like_feed = (req, res) => {
+  Feed.like(req.body.feed_id, req.body.user_id, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || 'Some error occurred while liking feed.',
+        success: 0,
+      });
+    else {
+      if (data === 'unliked') {
+        res.json({
+          like_id: null,
+          unliked: true,
+          success: 1,
+        });
+      } else {
+        res.json({
+          like_id: data,
+          unliked: false,
+          success: 1,
+        });
+      }
+    }
+  });
+};
+
+const get_feed_comment = (req, res) => {
+  const feed_id = req.query.feed_id;
+  Feed.getComment(feed_id, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || 'Some error occurred while getting feed comment.',
+        success: 0,
+      });
+    else {
+      res.json({
+        comment_data: data,
+        success: 1,
+      });
+    }
+  });
+};
+
 module.exports = {
   post_feed,
   get_feed,
+  like_feed,
+  get_feed_comment,
 };
