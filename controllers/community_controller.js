@@ -5,7 +5,7 @@ const post_feed = (req, res) => {
   const new_feed = new Feed({
     user_id: req.body.user_id,
     feed_content: req.body.feed_content,
-    imageUrl: req.body.imageUrl,
+    image_url: req.body.image_url,
     created_at: current_date,
     updated_at: current_date,
     like_count: 0,

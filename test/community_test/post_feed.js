@@ -1,7 +1,7 @@
 const data = {
   user_id: 'user1',
   feed_content: 'asdfaszzzz',
-  imageUrl:
+  image_url:
     'https://mblogthumb-phinf.pstatic.net/MjAyMTAxMTNfMjQy/MDAxNjEwNTMxNzU0NDAw.dnT66RTVTyv0DURLa16orDdxHfYGkWw2fIf-VvkWZl0g.DLOrmXxdYsTEU_PaIgDXLBgvs9W4lWrvcA78aObeo0Mg.JPEG.sb02199/3.jpg?type=w800',
 };
 

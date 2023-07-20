@@ -96,7 +96,7 @@ Routine.detail = function (routine_id, callback) {
     if (err) {
       console.error(err.message);
       callback(err, null);
-    } else if(rows.length > 0){
+    } else if (rows.length > 0) {
       const datas = {
         routine_id: rows[0].routine_id,
         routine_name: rows[0].routine_name,
@@ -105,7 +105,7 @@ Routine.detail = function (routine_id, callback) {
       let rowCount = 0;
       rows.forEach(row => {
         const motionSql =
-          'SELECT motion_id, motion_name, imageUrl FROM motion WHERE motion_id = ?';
+          'SELECT motion_id, motion_name, image_url FROM motion WHERE motion_id = ?';
         const {routine_motion_id, set_id, set_no, weight, rep, mode} = row;
         db.all(motionSql, row.motion_id, (err, motionRows) => {
           if (err) {
@@ -120,7 +120,7 @@ Routine.detail = function (routine_id, callback) {
                 routine_motion_id: routine_motion_id,
                 motion_id: motionRows[0].motion_id,
                 motion_name: motionRows[0].motion_name,
-                imageUrl: motionRows[0].imageUrl,
+                image_url: motionRows[0].image_url,
                 sets: [],
                 motion_range_min: -1,
                 motion_range_max: -1,
