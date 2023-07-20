@@ -8,8 +8,8 @@ const post_feed = (req, res) => {
   const current_date = new Date().toLocaleString();
   const new_feed = new Feed({
     user_id: req.body.user_id,
-    feed_content: req.body.content,
-    imageUrl: req.file ? req.file.location : null,
+    feed_content: req.body.feed_content,
+    image_url: req.body.image_url,
     created_at: current_date,
     updated_at: current_date,
     like_count: 0,

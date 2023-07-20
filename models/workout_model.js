@@ -107,7 +107,7 @@ Workout.brief = (user_id, recent = false, callback) => {
 //Get all records & sets in workout
 Workout.detail = (workout_id, callback) => {
   db.all(
-    `SELECT record.*, motion.motion_name, motion.imageURL, (
+    `SELECT record.*, motion.motion_name, motion.image_url, (
       SELECT json_group_array(json_object('set_no', set_info.set_no, 'weight', set_info.weight, 'rep', set_info.rep, 'mode', set_info.mode))
       FROM set_info
       WHERE set_info.record_id = record.record_id

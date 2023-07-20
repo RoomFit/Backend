@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Feed (
     feed_id INTEGER PRIMARY KEY,
     user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
     feed_content TEXT,
-    imageUrl TEXT,
+    image_url TEXT,
     created_at datetime,
     updated_at datetime,
     like_count INTEGER DEFAULT 0
@@ -46,13 +46,15 @@ CREATE TABLE IF NOT EXISTS motion (
     motion_name TEXT NOT NULL,
     motion_english_name TEXT NOT NULL,
 
-    major_target VARCHAR(30) NOT NULL,
-    minor_target VARCHAR(30) NOT NULL,
+    main_muscle TEXT NOT NULL,
+    sub_muscle TEXT NOT NULL,
 
-    is_one_arm INTEGER DEFAULT 0,
-    equipment VARCHAR(30) NOT NULL,
+    sequence INTEGER DEFAULT 1,
 
-    imageUrl VARCHAR(150) DEFAULT NULL,
+    grip TEXT NOT NULL,
+    add_on TEXT,
+
+    image_url TEXT DEFAULT NULL,
     description TEXT NOT NULL,
     count INTEGER DEFAULT 0 NOT NULL,
 
@@ -90,7 +92,7 @@ CREATE TABLE IF NOT EXISTS routine_motion (
     routine_motion_id INTEGER PRIMARY KEY,
     routine_id INTEGER NOT NULL,
     motion_id INTEGER NOT NULL,
-    set_order INTEGER NOT NULL,
+    motion_order INTEGER NOT NULL,
 
     FOREIGN KEY(routine_id) REFERENCES routine(routine_id) ON DELETE CASCADE
     FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE
