@@ -38,7 +38,7 @@ Feed.create = (new_feed, callback) => {
 Feed.getAll = callback => {
   db.serialize(() => {
     db.all(
-      'SELECT feed.feed_id, feed.feed_content, feed.image_url, feed.created_at, feed.updated_at, feed.like_count, feed.user_id,user.user_name FROM feed JOIN user ON feed.user_id = user.user_id;',
+      'SELECT feed.feed_id, feed.feed_content, feed.image_url, feed.created_at, feed.updated_at, feed.like_count, feed.user_id,user.user_name, CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like FROM feed JOIN user ON feed.user_id = user.user_id LEFT JOIN likes ON feed.feed_id = likes.feed_id AND feed.user_id = likes.user_id;',
       (err, rows) => {
         if (err) {
           console.log('error: ', err);
@@ -76,7 +76,20 @@ Feed.like = (feed_id, user_id, callback) => {
                   callback(err, null);
                   return;
                 } else {
-                  callback(null, 'unliked');
+                  // like like_count -1
+                  db.run(
+                    'UPDATE feed SET like_count = like_count - 1 WHERE feed_id = ?',
+                    feed_id,
+                    (err, rows) => {
+                      if (err) {
+                        console.log('error: ', err);
+                        callback(err, null);
+                        return;
+                      } else {
+                        callback(null, 'unliked');
+                      }
+                    },
+                  );
                 }
               },
             );
@@ -92,9 +105,23 @@ Feed.like = (feed_id, user_id, callback) => {
                   console.log('error: ', err);
                   callback(err, null);
                   return;
+                } else {
+                  // like like_count +1
+                  const likeId = this.lastID;
+                  db.run(
+                    'UPDATE feed SET like_count = like_count + 1 WHERE feed_id = ?',
+                    feed_id,
+                    (err, rows) => {
+                      if (err) {
+                        console.log('error: ', err);
+                        callback(err, null);
+                        return;
+                      } else {
+                        callback(null, likeId);
+                      }
+                    },
+                  );
                 }
-                const likeId = this.lastID;
-                callback(null, likeId);
               },
             );
           }
@@ -143,26 +170,5 @@ Feed.postComment = (new_comment, callback) => {
     );
   });
 };
-
-// Feed.likeStatus = (feed_id, user_id, callback) => {
-//   db.all(
-//     'SELECT * FROM Likes WHERE user_id = ? AND feed_id = ?',
-//     user_id,
-//     feed_id,
-//     (err, rows) => {
-//       if (err) {
-//         console.log('error: ', err);
-//         callback(err, null);
-//         return;
-//       } else {
-//         if (rows.length > 0) {
-//           callback(null, 'liked');
-//         } else {
-//           callback(null, 'unliked');
-//         }
-//       }
-//     },
-//   );
-// };
 
 module.exports = Feed;
