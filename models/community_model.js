@@ -144,4 +144,25 @@ Feed.postComment = (new_comment, callback) => {
   });
 };
 
+Feed.likeStatus = (feed_id, user_id, callback) => {
+  db.all(
+    'SELECT * FROM Likes WHERE user_id = ? AND feed_id = ?',
+    user_id,
+    feed_id,
+    (err, rows) => {
+      if (err) {
+        console.log('error: ', err);
+        callback(err, null);
+        return;
+      } else {
+        if (rows.length > 0) {
+          callback(null, 'liked');
+        } else {
+          callback(null, 'unliked');
+        }
+      }
+    },
+  );
+};
+
 module.exports = Feed;
