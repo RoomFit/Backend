@@ -107,7 +107,7 @@ Feed.like = (feed_id, user_id, callback) => {
 Feed.getComment = (feed_id, callback) => {
   db.serialize(() => {
     db.all(
-      'SELECT comment.comment_id, comment.comment_content, comment.updated_at, user.user_name FROM comment JOIN user ON comment.user_id = user.user_id WHERE comment.feed_id = ?',
+      'SELECT comment.comment_id, comment.comment_content, comment.updated_at, user.user_name, comment.user_id FROM comment JOIN user ON comment.user_id = user.user_id WHERE comment.feed_id = ?',
       feed_id,
       (err, rows) => {
         if (err) {
