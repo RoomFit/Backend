@@ -53,7 +53,8 @@ const add_motions = (req, res) => {
 
 const search_motions = (req, res) => {
   if (!req.body) res.status(400).send({message: 'Content can not be empty'});
-  Motion.search_motion(req.body.user_id, req.body.motion_name, req.body.grip, req.body.body_region,(err, data) => {
+  
+  Motion.search_motion(req.body.user_id, req.body.motion_name, req.body.grip?req.body.grip:[], req.body.body_region?req.body.body_region:[],(err, data) => {
     if (err)
       res
         .status(500)
