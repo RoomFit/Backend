@@ -114,30 +114,30 @@ const post_comment = (req, res) => {
   });
 };
 
-const like_status = (req, res) => {
-  Feed.likeStatus(req.body.feed_id, req.body.user_id, (err, data) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || 'Some error occurred while liking feed.',
-        success: 0,
-      });
-    else {
-      if (data === 'unliked') {
-        res.json({
-          like_id: null,
-          unliked: 1,
-          success: 1,
-        });
-      } else {
-        res.json({
-          like_id: data,
-          unliked: 0,
-          success: 1,
-        });
-      }
-    }
-  });
-};
+// const like_status = (req, res) => {
+//   Feed.likeStatus(req.body.feed_id, req.body.user_id, (err, data) => {
+//     if (err)
+//       res.status(500).send({
+//         message: err.message || 'Some error occurred while liking feed.',
+//         success: 0,
+//       });
+//     else {
+//       if (data === 'unliked') {
+//         res.json({
+//           like_id: null,
+//           unliked: 1,
+//           success: 1,
+//         });
+//       } else {
+//         res.json({
+//           like_id: data,
+//           unliked: 0,
+//           success: 1,
+//         });
+//       }
+//     }
+//   });
+// };
 
 module.exports = {
   post_feed,
@@ -145,5 +145,5 @@ module.exports = {
   like_feed,
   get_feed_comment,
   post_comment,
-  like_status,
+  // like_status,
 };
