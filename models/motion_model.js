@@ -4,9 +4,9 @@ const Hangul = require('hangul-js');
 const Motion = function (motion) {
   this.motion_id = motion.motion_id;
   this.motion_name = motion.motion_name;
-  this.major_target = motion.major_target;
-  this.minor_target = motion.minor_target;
-  this.equipment = motion.equipment;
+  this.body_region = motion.body_region;
+  this.sub_muscle = motion.sub_muscle;
+  this.grip = motion.grip;
   this.image_url = motion.image_url;
   this.description = motion.description;
   this.count = motion.count;
@@ -113,17 +113,17 @@ Motion.del_fav = function (user_id, motion_id, callback) {
 
 Motion.custom_motion = function (body, callback) {
   const sql =
-    'INSERT INTO motion (user_id, motion_name, motion_english_name,major_target,minor_target,is_one_arm,equipment,description) values (?,?,?,?,?,?,?,?)';
+    'INSERT INTO motion (user_id, motion_name, motion_english_name,body_region,sub_muscle,sequence,grip,description) values (?,?,?,?,?,?,?,?)';
   db.run(
     sql,
     [
       body.user_id,
       body.motion_name,
       body.motion_name,
-      body.major_target,
-      body.minor_target,
-      body.is_one_arm,
-      body.equipment,
+      body.body_region,
+      body.sub_muscle,
+      body.sequence,
+      body.grip,
       body.description,
     ],
     function (err, result) {
@@ -156,7 +156,7 @@ Motion.search_motion = function (user_id, motion_name, callback) {
       if (eng.test(replaceName)) {
         const fetchData = async () => {
           try {
-            const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, image_url, description FROM motion WHERE motion_id IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+            const sqlFav = `SELECT motion_id, motion_name, motion_english_name, body_region, sub_muscle, grip, image_url, description FROM motion WHERE motion_id IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
             const favRows = await new Promise((resolve, reject) => {
               db.all(
                 sqlFav,
@@ -171,7 +171,7 @@ Motion.search_motion = function (user_id, motion_name, callback) {
               );
             });
 
-            const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, image_url, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+            const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, body_region, sub_muscle, grip, image_url, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
             const notFavRows = await new Promise((resolve, reject) => {
               db.all(
                 sqlNotFav,
@@ -237,7 +237,7 @@ Motion.search_motion = function (user_id, motion_name, callback) {
       } else {
         const fetchData = async () => {
           try {
-            const sqlFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, image_url, description FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+            const sqlFav = `SELECT motion_id, motion_name, motion_english_name, body_region, sub_muscle, grip, image_url, description FROM motion WHERE motion_id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
             const favRows = await new Promise((resolve, reject) => {
               db.all(
                 sqlFav,
@@ -295,7 +295,7 @@ Motion.search_motion = function (user_id, motion_name, callback) {
               });
             }
 
-            const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, major_target, minor_target, equipment, image_url, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
+            const sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, body_region, sub_muscle, grip, image_url, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND (user_id = ? OR user_id IS NULL) ORDER BY count desc`;
             const notFavRows = await new Promise((resolve, reject) => {
               db.all(
                 sqlNotFav,

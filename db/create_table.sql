@@ -46,10 +46,11 @@ CREATE TABLE IF NOT EXISTS motion (
     motion_name TEXT NOT NULL,
     motion_english_name TEXT NOT NULL,
 
+    body_region TEXT,
     main_muscle TEXT NOT NULL,
     sub_muscle TEXT NOT NULL,
 
-    sequence INTEGER DEFAULT 1,
+    sequence TEXT,
 
     grip TEXT NOT NULL,
     add_on TEXT,

@@ -74,10 +74,10 @@ fetch('http://127.0.0.1:4000/motion',{
 //     body: JSON.stringify({
 //         user_id: "leeyj",
 //         motion_name: "테스트",
-//         major_target: "커스텀",
-//         minor_target: "동작",
-//         is_one_arm: 0,
-//         equipment:"핸들",
+//         body_region: "커스텀",
+//         sub_muscle: "동작",
+//         sequence: 0,
+//         grip:"핸들",
 //         description: "...."
 //     })
 // }).then(res=>res.json()).then(res=>{
