@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS Comment(
     updated_at datetime
 );
 
+
 CREATE TABLE IF NOT EXISTS motion (
     motion_id INTEGER PRIMARY KEY,
     motion_name TEXT NOT NULL,
