@@ -76,7 +76,20 @@ Feed.like = (feed_id, user_id, callback) => {
                   callback(err, null);
                   return;
                 } else {
-                  callback(null, 'unliked');
+                  // like like_count -1
+                  db.run(
+                    'UPDATE feed SET like_count = like_count - 1 WHERE feed_id = ?',
+                    feed_id,
+                    (err, rows) => {
+                      if (err) {
+                        console.log('error: ', err);
+                        callback(err, null);
+                        return;
+                      } else {
+                        callback(null, 'unliked');
+                      }
+                    },
+                  );
                 }
               },
             );
@@ -92,9 +105,23 @@ Feed.like = (feed_id, user_id, callback) => {
                   console.log('error: ', err);
                   callback(err, null);
                   return;
+                } else {
+                  // like like_count +1
+                  const likeId = this.lastID;
+                  db.run(
+                    'UPDATE feed SET like_count = like_count + 1 WHERE feed_id = ?',
+                    feed_id,
+                    (err, rows) => {
+                      if (err) {
+                        console.log('error: ', err);
+                        callback(err, null);
+                        return;
+                      } else {
+                        callback(null, likeId);
+                      }
+                    },
+                  );
                 }
-                const likeId = this.lastID;
-                callback(null, likeId);
               },
             );
           }
@@ -143,26 +170,5 @@ Feed.postComment = (new_comment, callback) => {
     );
   });
 };
-
-// Feed.likeStatus = (feed_id, user_id, callback) => {
-//   db.all(
-//     'SELECT * FROM Likes WHERE user_id = ? AND feed_id = ?',
-//     user_id,
-//     feed_id,
-//     (err, rows) => {
-//       if (err) {
-//         console.log('error: ', err);
-//         callback(err, null);
-//         return;
-//       } else {
-//         if (rows.length > 0) {
-//           callback(null, 'liked');
-//         } else {
-//           callback(null, 'unliked');
-//         }
-//       }
-//     },
-//   );
-// };
 
 module.exports = Feed;
