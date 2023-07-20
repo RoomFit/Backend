@@ -31,7 +31,8 @@ const post_feed = (req, res) => {
 };
 
 const get_feed = (req, res) => {
-  Feed.getAll((err, data) => {
+  const user_id = req.query.user_id;
+  Feed.getAll(user_id, (err, data) => {
     if (err)
       res.status(500).send({
         message: err.message || 'Some error occurred while retrieving feeds.',
