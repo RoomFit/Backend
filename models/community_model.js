@@ -55,7 +55,7 @@ Feed.getAll = callback => {
 
 Feed.like = (feed_id, user_id, callback) => {
   db.serialize(() => {
-    db.run(
+    db.all(
       'SELECT * FROM Likes WHERE user_id = ? AND feed_id = ?',
       user_id,
       feed_id,
