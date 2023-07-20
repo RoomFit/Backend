@@ -50,8 +50,7 @@ Feed.getAll = (user_id, callback) => {
         CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like
       FROM feed
       JOIN user ON feed.user_id = user.user_id
-      LEFT JOIN likes ON feed.feed_id = likes.feed_id AND feed.user_id = likes.user_id
-      WHERE feed.user_id = ?;`,
+      LEFT JOIN likes ON feed.feed_id = likes.feed_id AND feed.user_id = likes.user_id AND likes.user_id = ?`,
       [user_id],
       (err, rows) => {
         if (err) {
