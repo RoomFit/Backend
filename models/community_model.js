@@ -38,7 +38,7 @@ Feed.create = (new_feed, callback) => {
 Feed.getAll = callback => {
   db.serialize(() => {
     db.all(
-      'SELECT feed.feed_id, feed.feed_content, feed.image_url, feed.created_at, feed.updated_at, feed.like_count, user.user_name FROM feed JOIN user ON feed.user_id = user.user_id;',
+      'SELECT feed.feed_id, feed.feed_content, feed.image_url, feed.created_at, feed.updated_at, feed.like_count, feed.user_id,user.user_name FROM feed JOIN user ON feed.user_id = user.user_id;',
       (err, rows) => {
         if (err) {
           console.log('error: ', err);
@@ -107,7 +107,7 @@ Feed.like = (feed_id, user_id, callback) => {
 Feed.getComment = (feed_id, callback) => {
   db.serialize(() => {
     db.all(
-      'SELECT comment.comment_id, comment.comment_content, comment.updated_at, user.user_name, comment.user_id FROM comment JOIN user ON comment.user_id = user.user_id WHERE comment.feed_id = ?',
+      'SELECT comment.comment_id, comment.comment_content, comment.updated_at, user.user_name, user.user_id FROM comment JOIN user ON comment.user_id = user.user_id WHERE comment.feed_id = ?',
       feed_id,
       (err, rows) => {
         if (err) {
