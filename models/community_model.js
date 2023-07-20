@@ -15,7 +15,7 @@ Feed.create = (new_feed, callback) => {
   const sql = 'INSERT INTO favorite (user_id, motion_id) values (?,?)';
   db.serialize(() => {
     db.run(
-      'INSERT INTO feed (user_id,feed_content,imageUrl,created_at,updated_at,like_count) values (?,?,?,?,?,?)',
+      'INSERT INTO feed (user_id,feed_content,image_url,created_at,updated_at,like_count) values (?,?,?,?,?,?)',
       new_feed.user_id,
       new_feed.feed_content,
       new_feed.imageUrl,
