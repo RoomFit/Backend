@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS Likes(
     like_id INTEGER PRIMARY KEY,
     user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
     feed_id INTEGER REFERENCES Feed(feed_id),-- ON DELETE CASCADE DEFAULT NULL,
-    created_at datetime,
+    created_at datetime
 );
 
 CREATE TABLE IF NOT EXISTS Comment(
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS motion (
     motion_english_name TEXT NOT NULL,
 
     body_region TEXT,
-    main_muscle TEXT NOT NULL,
+    main_muscle TEXT,
     sub_muscle TEXT NOT NULL,
 
     sequence TEXT,
