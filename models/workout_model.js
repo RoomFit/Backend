@@ -67,7 +67,7 @@ Workout.brief = (user_id, recent = false, callback) => {
         )
       ) AS total_weight,
       (
-        SELECT json_group_array(DISTINCT motion.major_target)
+        SELECT json_group_array(DISTINCT motion.body_region)
         FROM motion
         WHERE motion.motion_id IN (
           SELECT motion_id
@@ -148,7 +148,7 @@ Workout.calender_date = (user_id, date, callback) => {
         )
       ) AS total_weight,
       (
-        SELECT json_group_array(DISTINCT motion.major_target)
+        SELECT json_group_array(DISTINCT motion.body_region)
         FROM motion
         WHERE motion.motion_id IN (
           SELECT motion_id
@@ -213,7 +213,7 @@ Workout.stat = (user_id, period, callback) => {
   };
   const weight_percentage_query = `
     SELECT weight * rep AS weight, (
-      SELECT major_target
+      SELECT body_region
       FROM motion
       WHERE motion_id IN (
         SELECT motion_id
