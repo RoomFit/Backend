@@ -23,7 +23,7 @@ Routine.load = function (user_id, limit = false, callback) {
     } else {
       const routineIds = rows.map(row => row.routine_id);
       const placeholders = routineIds.map(() => '?').join(',');
-      const sqlRoutine = `SELECT routine_name, routine.routine_id, motion.major_target FROM routine_motion INNER JOIN routine ON routine.routine_id = routine_motion.routine_id INNER JOIN motion ON motion.motion_id = routine_motion.motion_id WHERE routine_motion.routine_id IN (${placeholders})`;
+      const sqlRoutine = `SELECT routine_name, routine.routine_id, motion.body_region FROM routine_motion INNER JOIN routine ON routine.routine_id = routine_motion.routine_id INNER JOIN motion ON motion.motion_id = routine_motion.motion_id WHERE routine_motion.routine_id IN (${placeholders})`;
       db.all(sqlRoutine, routineIds, (err, routineRows) => {
         //console.log(routineRows);
         if (err) {
@@ -31,30 +31,30 @@ Routine.load = function (user_id, limit = false, callback) {
         } else {
           const groupedResults = {};
           routineRows.forEach(row => {
-            const {routine_id, routine_name, major_target} = row;
+            const {routine_id, routine_name, body_region} = row;
             if (!groupedResults[routine_id]) {
               groupedResults[routine_id] = {
                 routine_id: routine_id,
                 routine_name: routine_name,
-                major_targets: [major_target],
+                body_regions: [body_region],
                 motion_count: 1,
               };
             } else {
               let k = 0;
-              groupedResults[routine_id].major_targets.forEach(target => {
-                if (target.includes(major_target)) {
+              groupedResults[routine_id].body_regions.forEach(target => {
+                if (target.includes(body_region)) {
                   k = 1;
                 }
               });
               if (k == 0) {
-                groupedResults[routine_id].major_targets.push(major_target);
+                groupedResults[routine_id].body_regions.push(body_region);
               }
               groupedResults[routine_id].motion_count++;
             }
           });
           const finalResults = Object.values(groupedResults).map(result => {
             const uniqueMajorTarget = new Set();
-            result.major_targets.forEach(targets => {
+            result.body_regions.forEach(targets => {
               const target = targets.split(',').map(item => item.trim());
               target.forEach(tar => {
                 if (!uniqueMajorTarget.has(tar)) {
@@ -65,7 +65,7 @@ Routine.load = function (user_id, limit = false, callback) {
 
             return {
               ...result,
-              major_targets: [...uniqueMajorTarget].join(', '),
+              body_regions: [...uniqueMajorTarget].join(', '),
             };
           });
           finalResults.sort((a, b) => b.routine_id - a.routine_id);
@@ -96,7 +96,7 @@ Routine.detail = function (routine_id, callback) {
     if (err) {
       console.error(err.message);
       callback(err, null);
-    } else if(rows.length > 0){
+    } else if (rows.length > 0) {
       const datas = {
         routine_id: rows[0].routine_id,
         routine_name: rows[0].routine_name,
@@ -105,7 +105,7 @@ Routine.detail = function (routine_id, callback) {
       let rowCount = 0;
       rows.forEach(row => {
         const motionSql =
-          'SELECT motion_id, motion_name, imageUrl FROM motion WHERE motion_id = ?';
+          'SELECT motion_id, motion_name, image_url FROM motion WHERE motion_id = ?';
         const {routine_motion_id, set_id, set_no, weight, rep, mode} = row;
         db.all(motionSql, row.motion_id, (err, motionRows) => {
           if (err) {
@@ -120,7 +120,7 @@ Routine.detail = function (routine_id, callback) {
                 routine_motion_id: routine_motion_id,
                 motion_id: motionRows[0].motion_id,
                 motion_name: motionRows[0].motion_name,
-                imageUrl: motionRows[0].imageUrl,
+                image_url: motionRows[0].image_url,
                 sets: [],
                 motion_range_min: -1,
                 motion_range_max: -1,
