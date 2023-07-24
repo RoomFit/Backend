@@ -14,6 +14,7 @@ const axios = require('axios');
 setTimeout(() => {
   axios
     .put('http://localhost:4000/workout/done', {
+      user_id : "user1",
       workout_id: 1,
       tut: '00:45:00',
       title: '5일차 운동',
