@@ -4,6 +4,7 @@ const create_routine = (req, res) => {
   if (!req.body) res.status(400).send({message: 'User ID can not be empty'});
 
   Routine.create(req.body.user_id, (err, id) => {
+    console.log("..");
     if (err)
       res.status(500).send({
         message: err.message || 'Some error occurred while creating routine',

@@ -6,7 +6,6 @@ const Routine = function (routine) {
 };
 
 Routine.create = function (user_id, callback) {
-  console.log("..");
   const sql = 'INSERT INTO routine (user_id) values (?)';
   db.run(sql, user_id, function (err) {
     if (err) console.error(err.message);
@@ -282,6 +281,7 @@ Routine.save = function (user_id,routine_id, motion_list, callback) {
             };
           });
           finalResults.sort((a, b) => b.routine_id - a.routine_id);
+          //console.log(finalResults);
           callback(null, finalResults);
         }
       });
