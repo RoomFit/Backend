@@ -58,7 +58,7 @@ fetch('http://127.0.0.1:4000/motion/search',{
         'Content-type' : 'application/json'
     },
     body: JSON.stringify({
-        user_id: "leeyj",
+        user_id: "user1",
         motion_name: "테"
     })
 }).then(res=>res.json()).then(res=>{

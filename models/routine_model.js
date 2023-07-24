@@ -6,6 +6,7 @@ const Routine = function (routine) {
 };
 
 Routine.create = function (user_id, callback) {
+  console.log("..");
   const sql = 'INSERT INTO routine (user_id) values (?)';
   db.run(sql, user_id, function (err) {
     if (err) console.error(err.message);
