@@ -61,7 +61,7 @@ fetch('http://127.0.0.1:4000/motion/search',{
         user_id: "user1",
         motion_name: "",
         grip: [],
-        body_region: ['커스텀'],
+        body_region: [],
     })
 }).then(res=>res.json()).then(res=>{
     console.log(res);
