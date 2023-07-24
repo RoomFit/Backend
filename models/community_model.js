@@ -35,15 +35,27 @@ Feed.create = (new_feed, callback) => {
   });
 };
 
-Feed.getAll = callback => {
+Feed.getAll = (user_id, callback) => {
   db.serialize(() => {
     db.all(
-      'SELECT feed.feed_id, feed.feed_content, feed.image_url, feed.created_at, feed.updated_at, feed.like_count, feed.user_id,user.user_name, CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like FROM feed JOIN user ON feed.user_id = user.user_id LEFT JOIN likes ON feed.feed_id = likes.feed_id AND feed.user_id = likes.user_id;',
+      `SELECT
+        feed.feed_id,
+        feed.feed_content,
+        feed.image_url,
+        feed.created_at,
+        feed.updated_at,
+        feed.like_count,
+        feed.user_id,
+        user.user_name,
+        CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like
+      FROM feed
+      JOIN user ON feed.user_id = user.user_id
+      LEFT JOIN likes ON feed.feed_id = likes.feed_id AND likes.user_id = ?`,
+      [user_id],
       (err, rows) => {
         if (err) {
           console.log('error: ', err);
           callback(err, null);
-          return;
         } else {
           console.log(rows);
           callback(null, rows);
