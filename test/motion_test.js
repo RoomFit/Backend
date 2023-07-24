@@ -7,10 +7,10 @@ const axios = require('axios');
 //         'Content-type' : 'application/json'
 //     },
 //     body: JSON.stringify({
-//         user_id: "leeyj"
+//         user_id: "user1",
 //     })
 // }).then(res=>res.json()).then(res=>{
-//     console.log(res);
+//     //console.log(res);
 // });
 
 // // 모션 추가하기 테스트
@@ -51,7 +51,7 @@ const axios = require('axios');
 //     })
 // });
 
-// // 동작 검색
+// 동작 검색
 fetch('http://127.0.0.1:4000/motion/search',{
     method: "POST",
     headers:{
@@ -59,7 +59,13 @@ fetch('http://127.0.0.1:4000/motion/search',{
     },
     body: JSON.stringify({
         user_id: "user1",
+<<<<<<< HEAD
         motion_name: "테"
+=======
+        motion_name: "",
+        grip: [],
+        body_region: ['커스텀'],
+>>>>>>> f4f4e9f7f8a7218ea9920b907ff04de6cf1b34d4
     })
 }).then(res=>res.json()).then(res=>{
     console.log(res);
@@ -74,10 +80,10 @@ fetch('http://127.0.0.1:4000/motion/search',{
 //     body: JSON.stringify({
 //         user_id: "leeyj",
 //         motion_name: "테스트",
-//         major_target: "커스텀",
-//         minor_target: "동작",
-//         is_one_arm: 0,
-//         equipment:"핸들",
+//         body_region: "커스텀",
+//         sub_muscle: "동작",
+//         sequence: 0,
+//         grip:"핸들",
 //         description: "...."
 //     })
 // }).then(res=>res.json()).then(res=>{

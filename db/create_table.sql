@@ -12,21 +12,51 @@ CREATE TABLE IF NOT EXISTS user (
     body_fat INTEGER,
 
     set_break INTEGER,
-    motion_break INTEGER, 
+    motion_break INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS Feed (
+    feed_id INTEGER PRIMARY KEY,
+    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
+    feed_content TEXT,
+    image_url TEXT,
+    created_at datetime,
+    updated_at datetime,
+    like_count INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS Likes(
+    like_id INTEGER PRIMARY KEY,
+    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
+    feed_id INTEGER REFERENCES Feed(feed_id),-- ON DELETE CASCADE DEFAULT NULL,
+    created_at datetime
+);
+
+CREATE TABLE IF NOT EXISTS Comment(
+    comment_id INTEGER PRIMARY KEY,
+    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
+    feed_id INTEGER REFERENCES Feed(feed_id),-- ON DELETE CASCADE DEFAULT NULL,
+    comment_content TEXT,
+    created_at datetime,
+    updated_at datetime
+);
+
 
 CREATE TABLE IF NOT EXISTS motion (
     motion_id INTEGER PRIMARY KEY,
     motion_name TEXT NOT NULL,
     motion_english_name TEXT NOT NULL,
 
-    major_target VARCHAR(30) NOT NULL,
-    minor_target VARCHAR(30) NOT NULL,
+    body_region TEXT,
+    main_muscle TEXT,
+    sub_muscle TEXT NOT NULL,
 
-    is_one_arm INTEGER DEFAULT 0,
-    equipment VARCHAR(30) NOT NULL,
+    sequence TEXT,
 
-    imageUrl VARCHAR(150) DEFAULT NULL,
+    grip TEXT NOT NULL,
+    add_on TEXT,
+
+    image_url TEXT DEFAULT NULL,
     description TEXT NOT NULL,
     count INTEGER DEFAULT 0 NOT NULL,
 
@@ -64,7 +94,7 @@ CREATE TABLE IF NOT EXISTS routine_motion (
     routine_motion_id INTEGER PRIMARY KEY,
     routine_id INTEGER NOT NULL,
     motion_id INTEGER NOT NULL,
-    set_order INTEGER NOT NULL,
+    motion_order INTEGER NOT NULL,
 
     FOREIGN KEY(routine_id) REFERENCES routine(routine_id) ON DELETE CASCADE
     FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE
@@ -89,6 +119,16 @@ CREATE TABLE IF NOT EXISTS favorite (
 
     FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE
     FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS motion_range(
+    user_id TEXT NOT NULL,
+    motion_id INTEGER NOT NULL,
+    motion_range_min INTEGER,
+    motion_range_max INTEGER,
+
+    FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE 
 );
 
 CREATE TABLE IF NOT EXISTS packet (

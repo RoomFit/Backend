@@ -67,7 +67,7 @@ Workout.brief = (user_id, recent = false, callback) => {
         )
       ) AS total_weight,
       (
-        SELECT json_group_array(DISTINCT motion.major_target)
+        SELECT json_group_array(DISTINCT motion.body_region)
         FROM motion
         WHERE motion.motion_id IN (
           SELECT motion_id
@@ -79,19 +79,20 @@ Workout.brief = (user_id, recent = false, callback) => {
     FROM workout
     WHERE user_id = ?
   `;
-
-  if (recent)
+  let user_ids = [user_id];
+  if (recent){
     query += `AND DATE(start_time) = (
       SELECT MAX(DATE(start_time))
       FROM workout
-      WHERE end_time != ''
+      WHERE end_time != '' AND user_id = ?
     )
   `;
-
+    user_ids.push(user_id);
+  }
   query += `AND end_time != ''
   ORDER BY start_time DESC`;
 
-  db.all(query, [user_id], (err, rows) => {
+  db.all(query, user_ids, (err, rows) => {
     if (err) console.error(err);
     else {
       for (var i = 0; i < rows.length; i++) {
@@ -106,7 +107,7 @@ Workout.brief = (user_id, recent = false, callback) => {
 //Get all records & sets in workout
 Workout.detail = (workout_id, callback) => {
   db.all(
-    `SELECT record.*, motion.motion_name, motion.imageURL, (
+    `SELECT record.*, motion.motion_name, motion.image_url, (
       SELECT json_group_array(json_object('set_no', set_info.set_no, 'weight', set_info.weight, 'rep', set_info.rep, 'mode', set_info.mode))
       FROM set_info
       WHERE set_info.record_id = record.record_id
@@ -147,7 +148,7 @@ Workout.calender_date = (user_id, date, callback) => {
         )
       ) AS total_weight,
       (
-        SELECT json_group_array(DISTINCT motion.major_target)
+        SELECT json_group_array(DISTINCT motion.body_region)
         FROM motion
         WHERE motion.motion_id IN (
           SELECT motion_id
@@ -202,8 +203,7 @@ Workout.stat = (user_id, period, callback) => {
   const condition_query = `
     FROM workout
     WHERE user_id = ?
-    AND julianday(date('now', 'localtime')) - julianday(date(start_time)) <= ?
-    AND end_time != ''`;
+    AND julianday(date('now', 'localtime')) - julianday(date(start_time)) <= ?`;
   const queries = {
     total_time:
       `SELECT time(SUM(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time))), 'unixepoch')` +
@@ -213,7 +213,7 @@ Workout.stat = (user_id, period, callback) => {
   };
   const weight_percentage_query = `
     SELECT weight * rep AS weight, (
-      SELECT major_target
+      SELECT body_region
       FROM motion
       WHERE motion_id IN (
         SELECT motion_id
@@ -222,7 +222,7 @@ Workout.stat = (user_id, period, callback) => {
       )
     ) AS targets
     FROM set_info
-    WHERE record_id NOT NULL
+    WHERE record_id NOT NULL AND record_id IN (SELECT record_id FROM record WHERE workout_id IN (SELECT workout_id FROM workout WHERE user_id = ?))
   `;
   var weight = 0;
   var percent = {
@@ -235,7 +235,7 @@ Workout.stat = (user_id, period, callback) => {
     leg: 0,
     etc: 0,
   };
-  db.all(weight_percentage_query, [], (err, rows) => {
+  db.all(weight_percentage_query, [user_id], (err, rows) => {
     if (err) {
       console.error(err);
       return;

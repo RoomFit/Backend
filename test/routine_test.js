@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //루틴 생성
 fetch('http://http://127.0.0.1:4000/routine',{
     method : "POST",
@@ -10,6 +11,20 @@ fetch('http://http://127.0.0.1:4000/routine',{
 }).then(res=>res.json()).then(res=>{
     console.log(res);
 });
+=======
+// //루틴 생성
+// fetch('http://127.0.0.1:4000/routine',{
+//     method : "POST",
+//     headers:{
+//         'Content-type' : 'application/json'
+//     },
+//     body: JSON.stringify({
+//         user_id: "user1"
+//     })
+// }).then(res=>res.json()).then(res=>{
+//     console.log(res);
+// });
+>>>>>>> f4f4e9f7f8a7218ea9920b907ff04de6cf1b34d4
 
 // // 루틴 저장
 // fetch('http://127.0.0.1:4000/routine/save',{
@@ -18,18 +33,25 @@ fetch('http://http://127.0.0.1:4000/routine',{
 //         'Content-type' : 'application/json'
 //     },
 //     body: JSON.stringify({
-//         routine_id: 1,
+//         user_id:"user1",
+//         routine_id: 35,
 //         motion_list: [
 //           {
 //             motion_id: 2,
+//             motion_range_min: 20,
+//             motion_range_max: 90,
 //             sets: [{ weight: 30, reps: 20, mode: 1 }, { weight: 20, reps: 10, mode: 1 }]
 //           },
 //           {
-//             motion_id: 2,
+//             motion_id: 1,
+//             motion_range_min: 40,
+//             motion_range_max: 100,
 //             sets: [{ weight: 25, reps: 15, mode: 1 }, { weight: 60, reps: 10, mode: 1 }]
 //           },
 //           {
 //             motion_id: 3,
+//             motion_range_min: 20,
+//             motion_range_max: 40,
 //             sets: [{ weight: 15, reps: 15, mode: 1 }, { weight: 10, reps: 20, mode: 1 }, { weight: 70, reps: 5, mode: 1 }]
 //           }
 //         ]
@@ -50,7 +72,11 @@ fetch('http://http://127.0.0.1:4000/routine',{
 //     console.log(res);
 // });
 
+<<<<<<< HEAD
 // 전체 루틴 간략히 보기
+=======
+// // 전체 루틴 간략히 보기
+>>>>>>> f4f4e9f7f8a7218ea9920b907ff04de6cf1b34d4
 // fetch('http://127.0.0.1:4000/routine/load',{
 //     method:"POST",
 //     headers:{
@@ -60,6 +86,7 @@ fetch('http://http://127.0.0.1:4000/routine',{
 //         user_id: "user1",
 //         isHome: false,
 //     })
+<<<<<<< HEAD
 // }).then(res=>res.json()).then(res=>{
 //     console.log(res);
 // });
@@ -68,9 +95,19 @@ fetch('http://http://127.0.0.1:4000/routine',{
 // const id = 29
 // fetch('http://ec2-3-137-176-12.us-east-2.compute.amazonaws.com:4000/routine/detail/id',{
 //     method:"GET"
+=======
+>>>>>>> f4f4e9f7f8a7218ea9920b907ff04de6cf1b34d4
 // }).then(res=>res.json()).then(res=>{
 //     console.log(res);
 // });
+
+// 루틴 상세 보기
+const id = 35
+fetch('http://127.0.0.1:4000/routine/detail/35',{
+    method:"GET"
+}).then(res=>res.json()).then(res=>{
+    console.log(res);
+});
 
 // 루틴 삭제하기
 // fetch('http://127.0.0.1:4000/routine/delete',{

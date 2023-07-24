@@ -87,7 +87,7 @@ Account.update = (new_account, callback) => {
       let updateParams = [];
 
       if (new_account.birth) {
-        updateQuery += ' birth = ?,';
+        updateQuery += ' birthday = ?,';
         updateParams.push(new_account.birth);
       }
 
