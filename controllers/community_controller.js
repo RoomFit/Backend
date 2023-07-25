@@ -115,11 +115,43 @@ const post_comment = (req, res) => {
   });
 };
 
+const delete_feed = (req, res) => {
+  const feed_id = req.query.feed_id;
+  Feed.deleteComment(feed_id, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || 'Some error occurred while deleting feed.',
+        success: 0,
+      });
+    else {
+      res.json({
+        success: 1,
+      });
+    }
+  });
+};
+const delete_comment = (req, res) => {
+  const comment_id = req.query.comment_id;
+  Feed.deleteComment(comment_id, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || 'Some error occurred while deleting comment.',
+        success: 0,
+      });
+    else {
+      res.json({
+        success: 1,
+      });
+    }
+  });
+};
+
 module.exports = {
   post_feed,
   get_feed,
   like_feed,
   get_feed_comment,
   post_comment,
-  // like_status,
+  delete_feed,
+  delete_comment,
 };

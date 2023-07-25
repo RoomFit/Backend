@@ -183,4 +183,36 @@ Feed.postComment = (new_comment, callback) => {
   });
 };
 
+Feed.deleteFeed = (feed_id, callback) => {
+  db.serialize(() => {
+    db.run('DELETE FROM feed WHERE feed_id = ?', feed_id, (err, rows) => {
+      if (err) {
+        console.log('error: ', err);
+        callback(err, null);
+        return;
+      } else {
+        callback(null, 'deleted');
+      }
+    });
+  });
+};
+
+Feed.deleteComment = (comment_id, callback) => {
+  db.serialize(() => {
+    db.run(
+      'DELETE FROM comment WHERE comment_id = ?',
+      comment_id,
+      (err, rows) => {
+        if (err) {
+          console.log('error: ', err);
+          callback(err, null);
+          return;
+        } else {
+          callback(null, 'deleted');
+        }
+      },
+    );
+  });
+};
+
 module.exports = Feed;
