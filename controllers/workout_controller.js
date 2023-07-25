@@ -30,6 +30,7 @@ const update_workout = (req, res) => {
     res.status(400).send({message: 'ID can not be empty'});
 
   const new_workout = {
+    user_id: req.body.user_id,
     workout_id: req.body.workout_id,
     end_time: new Date().toLocaleString(),
     tut: req.body.tut,
