@@ -117,7 +117,7 @@ const post_comment = (req, res) => {
 
 const delete_feed = (req, res) => {
   const feed_id = req.query.feed_id;
-  Feed.deleteComment(feed_id, (err, data) => {
+  Feed.deleteFeed(feed_id, (err, data) => {
     if (err)
       res.status(500).send({
         message: err.message || 'Some error occurred while deleting feed.',
