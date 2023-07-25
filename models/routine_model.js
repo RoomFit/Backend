@@ -135,6 +135,8 @@ Routine.detail = function (routine_id, callback) {
                 weight: weight,
                 reps: rep,
                 mode: mode,
+                isDone:false,
+                isDoing:false,
               });
             rowCount++;
             if (rowCount === rows.length){
