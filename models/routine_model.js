@@ -91,7 +91,7 @@ Routine.detail = function (routine_id, callback) {
                 set_info.mode
                FROM routine_motion INNER JOIN routine ON routine.routine_id = routine_motion.routine_id
                INNER JOIN set_info ON set_info.routine_motion_id = routine_motion.routine_motion_id
-               WHERE routine_motion.routine_id = ? order by set_order, set_no`;
+               WHERE routine_motion.routine_id = ? order by motion_order, set_no`;
   db.all(sql, routine_id, (err, rows) => {
     if (err) {
       console.error(err.message);
@@ -205,7 +205,7 @@ Routine.save = function (user_id,routine_id, motion_list, callback) {
       console.error(err.message);
     } else {
       for (let i = 0; i < motion_list.length; i++) {
-        const insertRoutineMotion = `INSERT INTO routine_motion (routine_id, motion_id, set_order) VALUES (?,?,?)`;
+        const insertRoutineMotion = `INSERT INTO routine_motion (routine_id, motion_id, motion_order) VALUES (?,?,?)`;
         db.run(
           insertRoutineMotion,
           [routine_id, motion_list[i].motion_id, i + 1],
