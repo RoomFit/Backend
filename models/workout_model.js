@@ -95,7 +95,7 @@ Workout.recent = (user_id, callback) => {
 };
 
 //Get Brief Workout Information
-Workout.brief = (user_id, recent = false, callback) => {
+Workout.brief = (user_id, duration = false, callback) => {
   var query = `
     SELECT 
       workout_id,
@@ -127,18 +127,24 @@ Workout.brief = (user_id, recent = false, callback) => {
     WHERE user_id = ?
   `;
   let user_ids = [user_id];
-  if (recent){
+  if (duration===0){
     query += `AND DATE(start_time) = (
       SELECT MAX(DATE(start_time))
       FROM workout
       WHERE end_time != '' AND user_id = ?
     )
   `;
-    user_ids.push(user_id);
+
+  }
+  else if (duration === 7){
+    query += `AND DATE(start_time) >= (SELECT DATE('now','localtime', '-${duration} days') FROM workout WHERE end_time != '' AND user_id = ?)`
+  }
+  else{
+    query += `AND DATE(start_time) >= (SELECT DATE('now','localtime', '-${duration} months') FROM workout WHERE end_time != '' AND user_id = ?)`
   }
   query += `AND end_time != ''
   ORDER BY start_time DESC`;
-
+  user_ids.push(user_id);
   db.all(query, user_ids, (err, rows) => {
     if (err) console.error(err);
     else {
@@ -146,7 +152,6 @@ Workout.brief = (user_id, recent = false, callback) => {
         const target_arr = JSON.parse(rows[i].targets).join(', ').split(', ');
         rows[i].targets = [...new Set(target_arr)];
       }
-      console.log(rows);
       callback(null, rows);
     }
   });
