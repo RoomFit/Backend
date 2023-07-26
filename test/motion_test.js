@@ -51,37 +51,37 @@ const axios = require('axios');
 //     })
 // });
 
-// // 동작 검색
-// fetch('http://127.0.0.1:4000/motion/search',{
-//     method: "POST",
-//     headers:{
-//         'Content-type' : 'application/json'
-//     },
-//     body: JSON.stringify({
-//         user_id: "user1",
-//         motion_name: "",
-//         grip: [],
-//         body_region: [],
-//     })
-// }).then(res=>res.json()).then(res=>{
-//     console.log(res);
-// });
-
-// 커스텀 동작 생성
-fetch('http://127.0.0.1:4000/motion/custom',{
+// 동작 검색
+fetch('http://127.0.0.1:4000/motion/search',{
     method: "POST",
     headers:{
         'Content-type' : 'application/json'
     },
     body: JSON.stringify({
         user_id: "user1",
-        motion_name: "테스트",
-        body_region: "커스텀",
-        sub_muscle: "동작",
-        sequence: 0,
-        grip:"핸들",
-        description: "...."
+        motion_name: "",
+        grip: [],
+        body_region: ['즐겨찾기', '가슴', '등'],
     })
 }).then(res=>res.json()).then(res=>{
     console.log(res);
 });
+
+// // 커스텀 동작 생성
+// fetch('http://127.0.0.1:4000/motion/custom',{
+//     method: "POST",
+//     headers:{
+//         'Content-type' : 'application/json'
+//     },
+//     body: JSON.stringify({
+//         user_id: "user1",
+//         motion_name: "테스트",
+//         body_region: "커스텀",
+//         sub_muscle: "동작",
+//         sequence: 0,
+//         grip:"핸들",
+//         description: "...."
+//     })
+// }).then(res=>res.json()).then(res=>{
+//     console.log(res);
+// });

@@ -144,14 +144,11 @@ Motion.add_motion = function (motion_ids, callback) {
 
 Motion.search_motion = function (user_id, motion_name, grip, body_region, callback) {
   const sql = 'SELECT * FROM favorite WHERE user_id = ?';
-  let fav = '';
-  if(body_region[0]==='즐겨찾기'){
-    fav = body_region.shift();
-  }
-  let custom = '';
-  if(body_region[0]==='커스텀'){
-    custom = body_region.shift();
-  }
+  let fav = body_region.filter((item) => item === '즐겨찾기')[0];
+  body_region = body_region.filter((item) => item !== '즐겨찾기');
+  
+  let custom = body_region.filter((item) => item === '커스텀')[0];
+  body_region = body_region.filter((item) => item !== '커스텀');
   //console.log(Array.isArray(grip));
   db.all(sql, user_id, (err, rows) => {
     if (err) {
@@ -173,7 +170,7 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
         const fetchData = async () => {
           try {
             let sqlFav = `SELECT motion_id, motion_name, motion_english_name, body_region, sub_muscle, grip, image_url, description FROM motion WHERE motion_id IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? ${body_region_like_sql}`;
-            if(custom === '커스텀'){
+            if(custom === '커스텀' && fav !== '즐겨찾기'){
               sqlFav += ` AND user_id = ?`
             }
             else{
@@ -196,7 +193,6 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
                 },
               );
             });
-
             let sqlNotFav = `SELECT motion_id, motion_name, motion_english_name, body_region, sub_muscle, grip, image_url, description FROM motion WHERE motion_id NOT IN (${placeholders}) AND REPLACE(motion_english_name, ' ', '') LIKE ? ${body_region_like_sql}`;
             if(custom === '커스텀'){
               sqlNotFav += ` AND user_id = ?`
@@ -208,8 +204,10 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
               sqlNotFav +=` AND grip IN (${gripHolder})`
             }
             sqlNotFav+=` ORDER BY count desc`;
+            console.log("?");
             const notFavRows = await new Promise((resolve, reject) => {
-              if(fav===''){
+              if(fav!=='즐겨찾기') {
+                
                 db.all(
                   sqlNotFav,
                   [...favoriteMotionIds, `%${replaceName}%`, user_id, ...(grip.length > 0 ? grip : [])],
@@ -221,12 +219,27 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
                     }
                   },
                 );
-              }
-              else{
-                resolve([]);
-              }
+              }  
+              else {
+                if(custom === "커스텀"){
+                  db.all(
+                    sqlNotFav,
+                    [...favoriteMotionIds, `%${replaceName}%`, user_id, ...(grip.length > 0 ? grip : [])],
+                    (err, notFavRows) => {
+                      if (err) {
+                        reject(err);
+                      } else {
+                        resolve(notFavRows);
+                      }
+                    },
+                  );
+                }
+                else{
+                  resolve([]);
+                }
+                
+              }            
             });
-
             const fetchMotionRange = async row => {
               const sqlMotionRange = `SELECT motion_range_min, motion_range_max FROM motion_range WHERE motion_id = ? AND user_id = ?`;
               const motion_range = await new Promise((resolve, reject) => {
@@ -279,7 +292,7 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
         const fetchData = async () => {
           try {
             let sqlFav = `SELECT motion_id, motion_name, motion_english_name, body_region, sub_muscle, grip, image_url, description FROM motion WHERE motion_id IN (${placeholders}) ${body_region_like_sql}`;
-            if(custom === '커스텀'){
+            if(custom === '커스텀' && fav!=='즐겨찾기'){
               sqlFav += ` AND user_id = ?`
             }
             else{
@@ -358,7 +371,7 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
             }
             sqlNotFav+=` ORDER BY count desc`;
             const notFavRows = await new Promise((resolve, reject) => {
-              if(fav===''){
+              if(fav!=='즐겨찾기'){
                 db.all(
                   sqlNotFav,
                   [...favoriteMotionIds, user_id, ...(grip.length > 0 ? grip : [])],
@@ -371,9 +384,25 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
                   },
                 );
               }
-              else{
-                resolve([]);
-              }
+              else {
+                if(custom === "커스텀"){
+                  db.all(
+                    sqlNotFav,
+                    [...favoriteMotionIds, user_id, ...(grip.length > 0 ? grip : [])],
+                    (err, notFavRows) => {
+                      if (err) {
+                        reject(err);
+                      } else {
+                        resolve(notFavRows);
+                      }
+                    },
+                  );
+                }
+                else{
+                  resolve([]);
+                }
+                
+              }    
             });
 
             if (replaceName.length === 0) {
