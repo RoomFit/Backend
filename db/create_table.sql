@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS Feed (
     feed_id INTEGER PRIMARY KEY,
-    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
+    user_id TEXT REFERENCES user(user_id) ON DELETE CASCADE,
     feed_content TEXT,
     image_url TEXT,
     created_at datetime,
@@ -25,17 +25,20 @@ CREATE TABLE IF NOT EXISTS Feed (
     like_count INTEGER DEFAULT 0
 );
 
+CREATE INDEX IF NOT EXISTS user_id_index ON user(user_id);
+CREATE INDEX IF NOT EXISTS feed_id_index ON Feed(feed_id);
+
 CREATE TABLE IF NOT EXISTS Likes(
     like_id INTEGER PRIMARY KEY,
-    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
-    feed_id INTEGER REFERENCES Feed(feed_id),-- ON DELETE CASCADE DEFAULT NULL,
-    created_at datetime,
+    user_id TEXT REFERENCES user(user_id) ON DELETE CASCADE,
+    feed_id INTEGER REFERENCES Feed(feed_id) ON DELETE CASCADE,
+    created_at datetime
 );
 
 CREATE TABLE IF NOT EXISTS Comment(
     comment_id INTEGER PRIMARY KEY,
-    user_id TEXT REFERENCES user(user_id),-- ON DELETE CASCADE DEFAULT NULL,
-    feed_id INTEGER REFERENCES Feed(feed_id),-- ON DELETE CASCADE DEFAULT NULL,
+    user_id TEXT REFERENCES user(user_id) ON DELETE CASCADE,
+    feed_id INTEGER REFERENCES Feed(feed_id) ON DELETE CASCADE,
     comment_content TEXT,
     created_at datetime,
     updated_at datetime
