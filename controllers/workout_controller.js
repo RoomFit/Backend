@@ -58,7 +58,7 @@ const recent_workouts = (req, res) => {
 const workout_brief = (req, res) => {
   if (!req.body) res.status(400).send({message: 'Content can not be empty'});
 
-  Workout.brief(req.body.user_id, false, (err, result) => {
+  Workout.brief(req.body.user_id, req.body.duration, (err, result) => {
     if (err) console.error(err);
     else res.json(result);
   });
@@ -67,7 +67,7 @@ const workout_brief = (req, res) => {
 const workout_brief_recent = (req, res) => {
   if (!req.body) res.status(400).send({message: 'Content can not be empty'});
 
-  Workout.brief(req.body.user_id, true, (err, result) => {
+  Workout.brief(req.body.user_id, 0, (err, result) => {
     if (err) console.error(err);
     else res.json(result);
   });
