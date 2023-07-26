@@ -91,7 +91,7 @@ Routine.detail = function (routine_id, callback) {
                 set_info.mode
                FROM routine_motion INNER JOIN routine ON routine.routine_id = routine_motion.routine_id
                INNER JOIN set_info ON set_info.routine_motion_id = routine_motion.routine_motion_id
-               WHERE routine_motion.routine_id = ? order by set_order, set_no`;
+               WHERE routine_motion.routine_id = ? order by motion_order, set_no`;
   db.all(sql, routine_id, (err, rows) => {
     if (err) {
       console.error(err.message);
@@ -135,6 +135,8 @@ Routine.detail = function (routine_id, callback) {
                 weight: weight,
                 reps: rep,
                 mode: mode,
+                isDone:false,
+                isDoing:false,
               });
             rowCount++;
             if (rowCount === rows.length){
@@ -175,69 +177,9 @@ Routine.delete = function (routine_ids, callback) {
   });
 };
 
-Routine.save = function (user_id,routine_id, motion_list, callback) {
-  for(let i = 0; i<motion_list.length; i++){
-    const checkData = `SELECT * FROM motion_range WHERE user_id = ? AND motion_id = ?`;
-    db.get(checkData, [user_id,motion_list[i].motion_id], (err, row)=>{
-      if(row){
-        const sqlUpdate = `UPDATE motion_range SET motion_range_min = ?, motion_range_max = ? WHERE motion_id = ? AND user_id = ?`;
-        db.run(sqlUpdate, [motion_list[i].motion_range_min, motion_list[i].motion_range_max, motion_list[i].motion_id, user_id], (err)=>{
-          if(err){
-            console.error(err);
-          }
-        })
-      }
-      else{
-        const sqlInsert = `INSERT INTO motion_range (user_id, motion_id, motion_range_min, motion_range_max) VALUES (?,?,?,?)`;
-        db.run(sqlInsert,[user_id,motion_list[i].motion_id,motion_list[i].motion_range_min,motion_list[i].motion_range_max],(err)=>{
-          if(err){
-            console.error(err);
-          }
-        })
-      }
-    })
-  }
-  const sql = `DELETE FROM routine_motion where routine_id = ?`;
-  db.run(sql, routine_id, (err, result) => {
-    if (err) {
-      console.error(err.message);
-    } else {
-      for (let i = 0; i < motion_list.length; i++) {
-        const insertRoutineMotion = `INSERT INTO routine_motion (routine_id, motion_id, set_order) VALUES (?,?,?)`;
-        db.run(
-          insertRoutineMotion,
-          [routine_id, motion_list[i].motion_id, i + 1],
-          function (err) {
-            if (err) {
-              console.error(err.message);
-            } else {
-              const routineMotionId = this.lastID;
-              for (let j = 0; j < motion_list[i].sets.length; j++) {
-                const insertSet =
-                  'INSERT INTO set_info (routine_motion_id, set_no, weight, rep, mode) VALUES (?,?,?,?,?)';
-                db.run(
-                  insertSet,
-                  [
-                    routineMotionId,
-                    j + 1,
-                    motion_list[i].sets[j].weight,
-                    motion_list[i].sets[j].reps,
-                    motion_list[i].sets[j].mode,
-                  ],
-                  err => {
-                    if (err) {
-                      console.error(err.message);
-                    }
-                  },
-                );
-              }
-            }
-          },
-        );
-      }
-      const sqlRoutine = `SELECT routine_name, routine.routine_id, motion.body_region FROM routine_motion INNER JOIN routine ON routine.routine_id = routine_motion.routine_id INNER JOIN motion ON motion.motion_id = routine_motion.motion_id WHERE routine_motion.routine_id = ?`;
+Routine.save_update = function(routine_id, callback){
+  const sqlRoutine = `SELECT routine_name, routine.routine_id, motion.body_region FROM routine_motion INNER JOIN routine ON routine.routine_id = routine_motion.routine_id INNER JOIN motion ON motion.motion_id = routine_motion.motion_id WHERE routine_motion.routine_id = ?`;
       db.all(sqlRoutine, routine_id, (err, routineRows) => {
-        //console.log(routineRows);
         if (err) {
           console.error(err);
         } else {
@@ -281,10 +223,73 @@ Routine.save = function (user_id,routine_id, motion_list, callback) {
             };
           });
           finalResults.sort((a, b) => b.routine_id - a.routine_id);
-          //console.log(finalResults);
           callback(null, finalResults);
         }
       });
+}
+
+Routine.save = function (user_id,routine_id, motion_list, callback) {
+  for(let i = 0; i<motion_list.length; i++){
+    const checkData = `SELECT * FROM motion_range WHERE user_id = ? AND motion_id = ?`;
+    db.get(checkData, [user_id,motion_list[i].motion_id], (err, row)=>{
+      if(row){
+        const sqlUpdate = `UPDATE motion_range SET motion_range_min = ?, motion_range_max = ? WHERE motion_id = ? AND user_id = ?`;
+        db.run(sqlUpdate, [motion_list[i].motion_range_min, motion_list[i].motion_range_max, motion_list[i].motion_id, user_id], (err)=>{
+          if(err){
+            console.error(err);
+          }
+        })
+      }
+      else{
+        const sqlInsert = `INSERT INTO motion_range (user_id, motion_id, motion_range_min, motion_range_max) VALUES (?,?,?,?)`;
+        db.run(sqlInsert,[user_id,motion_list[i].motion_id,motion_list[i].motion_range_min,motion_list[i].motion_range_max],(err)=>{
+          if(err){
+            console.error(err);
+          }
+        })
+      }
+    })
+  }
+  const sql = `DELETE FROM routine_motion where routine_id = ?`;
+  db.run(sql, routine_id, (err, result) => {
+    if (err) {
+      console.error(err.message);
+    } else {
+      for (let i = 0; i < motion_list.length; i++) {
+        const insertRoutineMotion = `INSERT INTO routine_motion (routine_id, motion_id, motion_order) VALUES (?,?,?)`;
+        db.run(
+          insertRoutineMotion,
+          [routine_id, motion_list[i].motion_id, i + 1],
+          function (err) {
+            if (err) {
+              console.error(err.message);
+            } else {
+              const routineMotionId = this.lastID;
+              for (let j = 0; j < motion_list[i].sets.length; j++) {
+                const insertSet =
+                  'INSERT INTO set_info (routine_motion_id, set_no, weight, rep, mode) VALUES (?,?,?,?,?)';
+                db.run(
+                  insertSet,
+                  [
+                    routineMotionId,
+                    j + 1,
+                    motion_list[i].sets[j].weight,
+                    motion_list[i].sets[j].reps,
+                    motion_list[i].sets[j].mode,
+                  ],
+                  err => {
+                    if (err) {
+                      console.error(err.message);
+                    }
+                  },
+                );
+              }
+              callback(null, result);
+            }
+          },
+        );
+      }
+      
     }
   });
 };

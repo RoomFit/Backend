@@ -128,7 +128,7 @@ Motion.custom_motion = function (body, callback) {
     ],
     function (err, result) {
       if (err) console.error(err.message);
-      else callback(null, result);
+      else callback(null, this.lastID);
     },
   );
 };

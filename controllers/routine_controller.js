@@ -52,16 +52,38 @@ const delete_routine = (req, res) => {
   });
 };
 
-const save_routine = (req, res) => {
-  if (!req.body) res.status(400).send({message: 'Content can not be empty'});
+const save_routine = async (req, res) => {
+  if (!req.body) res.status(400).send({ message: 'Content can not be empty' });
 
-  Routine.save(req.body.user_id, req.body.routine_id, req.body.motion_list, (err, result) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || 'Some error occured while saving the routine',
+  try {
+    // Routine.save 함수가 완료될 때까지 기다립니다.
+    const saveResult = await new Promise((resolve, reject) => {
+      Routine.save(req.body.user_id, req.body.routine_id, req.body.motion_list, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
       });
-    res.json(result);
-  });
+    });
+
+    // Routine.save_update 함수가 완료될 때까지 기다립니다.
+    const saveUpdateResult = await new Promise((resolve, reject) => {
+      Routine.save_update(req.body.routine_id, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+
+    res.json(saveUpdateResult);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || 'Some error occurred while saving the routine',
+    });
+  }
 };
 
 const change_routine_name = (req, res) => {
