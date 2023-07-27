@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS Feed (
     image_url TEXT,
     created_at datetime,
     updated_at datetime,
-    like_count INTEGER DEFAULT 0
+    like_count INTEGER DEFAULT 0,
+    category TEXT,
 );
 
 CREATE INDEX IF NOT EXISTS user_id_index ON user(user_id);

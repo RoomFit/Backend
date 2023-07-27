@@ -8,6 +8,7 @@ const Feed = function (feed) {
   this.created_at = feed.created_at;
   this.updated_at = feed.updated_at;
   this.like_count = feed.like_count;
+  this.category = feed.category;
 };
 
 Feed.create = (new_feed, callback) => {
@@ -15,13 +16,14 @@ Feed.create = (new_feed, callback) => {
   const sql = 'INSERT INTO favorite (user_id, motion_id) values (?,?)';
   db.serialize(() => {
     db.run(
-      'INSERT INTO feed (user_id,feed_content,image_url,created_at,updated_at,like_count) values (?,?,?,?,?,?)',
+      'INSERT INTO feed (user_id,feed_content,image_url,created_at,updated_at,like_count,category) values (?,?,?,?,?,?,?)',
       new_feed.user_id,
       new_feed.feed_content,
       new_feed.image_url,
       new_feed.created_at,
       new_feed.updated_at,
       new_feed.like_count,
+      new_feed.category,
       function (err) {
         if (err) {
           console.log('error: ', err);
@@ -46,6 +48,7 @@ Feed.getAll = (user_id, callback) => {
         feed.updated_at,
         feed.like_count,
         feed.user_id,
+        feed.category,
         user.user_name,
         CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like,
         (SELECT COUNT(*) FROM comment WHERE comment.feed_id = feed.feed_id) AS comment_count
