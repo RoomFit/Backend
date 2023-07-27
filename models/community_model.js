@@ -47,7 +47,8 @@ Feed.getAll = (user_id, callback) => {
         feed.like_count,
         feed.user_id,
         user.user_name,
-        CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like
+        CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like,
+        (SELECT COUNT(*) FROM comment WHERE comment.feed_id = feed.feed_id) AS comment_count
       FROM feed
       JOIN user ON feed.user_id = user.user_id
       LEFT JOIN likes ON feed.feed_id = likes.feed_id AND likes.user_id = ?`,
