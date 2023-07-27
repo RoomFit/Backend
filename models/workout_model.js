@@ -31,7 +31,54 @@ Workout.update = (new_workout, callback) => {
     ],
     (err, res) => {
       if (err) console.error(err);
-      callback(null, res);
+      else{
+        var query = `
+          SELECT 
+          workout_id,
+          title,
+          DATE(start_time) AS date,
+          start_time,
+          end_time,
+          time(strftime('%s', datetime(end_time)) - strftime('%s', datetime(start_time)), 'unixepoch') AS total_time,
+          (
+            SELECT SUM(set_info.weight * set_info.rep)
+            FROM set_info
+            WHERE set_info.record_id IN (
+              SELECT record_id
+              FROM record
+              WHERE record.workout_id = workout.workout_id
+            )
+          ) AS total_weight,
+          (
+            SELECT json_group_array(DISTINCT motion.body_region)
+            FROM motion
+            WHERE motion.motion_id IN (
+              SELECT motion_id
+              FROM record
+              WHERE record.workout_id = workout.workout_id
+            )
+          ) AS targets,
+          memo
+          FROM workout
+          WHERE user_id = ?
+          `;
+        
+        query += `AND end_time != ''
+        ORDER BY start_time DESC`;
+
+        db.all(query, new_workout.user_id, (err, rows) => {
+          if (err) console.error(err);
+          else {
+            for (var i = 0; i < rows.length; i++) {
+              const target_arr = JSON.parse(rows[i].targets).join(', ').split(', ');
+              rows[i].targets = [...new Set(target_arr)];
+            }
+            console.log(rows);
+            callback(null, rows);
+          }
+        });
+      }
+      //callback(null, res);
     },
   );
 };
@@ -48,7 +95,7 @@ Workout.recent = (user_id, callback) => {
 };
 
 //Get Brief Workout Information
-Workout.brief = (user_id, recent = false, callback) => {
+Workout.brief = (user_id, duration = false, callback) => {
   var query = `
     SELECT 
       workout_id,
@@ -67,7 +114,7 @@ Workout.brief = (user_id, recent = false, callback) => {
         )
       ) AS total_weight,
       (
-        SELECT json_group_array(DISTINCT motion.major_target)
+        SELECT json_group_array(DISTINCT motion.body_region)
         FROM motion
         WHERE motion.motion_id IN (
           SELECT motion_id
@@ -80,18 +127,24 @@ Workout.brief = (user_id, recent = false, callback) => {
     WHERE user_id = ?
   `;
   let user_ids = [user_id];
-  if (recent){
+  if (duration===0){
     query += `AND DATE(start_time) = (
       SELECT MAX(DATE(start_time))
       FROM workout
       WHERE end_time != '' AND user_id = ?
     )
   `;
-    user_ids.push(user_id);
+
+  }
+  else if (duration === 7){
+    query += `AND DATE(start_time) >= (SELECT DATE('now','localtime', '-${duration} days') FROM workout WHERE end_time != '' AND user_id = ?)`
+  }
+  else{
+    query += `AND DATE(start_time) >= (SELECT DATE('now','localtime', '-${duration} months') FROM workout WHERE end_time != '' AND user_id = ?)`
   }
   query += `AND end_time != ''
   ORDER BY start_time DESC`;
-
+  user_ids.push(user_id);
   db.all(query, user_ids, (err, rows) => {
     if (err) console.error(err);
     else {
@@ -99,7 +152,6 @@ Workout.brief = (user_id, recent = false, callback) => {
         const target_arr = JSON.parse(rows[i].targets).join(', ').split(', ');
         rows[i].targets = [...new Set(target_arr)];
       }
-      console.log(rows);
       callback(null, rows);
     }
   });
@@ -107,7 +159,7 @@ Workout.brief = (user_id, recent = false, callback) => {
 //Get all records & sets in workout
 Workout.detail = (workout_id, callback) => {
   db.all(
-    `SELECT record.*, motion.motion_name, motion.imageURL, (
+    `SELECT record.*, motion.motion_name, motion.image_url, (
       SELECT json_group_array(json_object('set_no', set_info.set_no, 'weight', set_info.weight, 'rep', set_info.rep, 'mode', set_info.mode))
       FROM set_info
       WHERE set_info.record_id = record.record_id
@@ -148,7 +200,7 @@ Workout.calender_date = (user_id, date, callback) => {
         )
       ) AS total_weight,
       (
-        SELECT json_group_array(DISTINCT motion.major_target)
+        SELECT json_group_array(DISTINCT motion.body_region)
         FROM motion
         WHERE motion.motion_id IN (
           SELECT motion_id
@@ -213,7 +265,7 @@ Workout.stat = (user_id, period, callback) => {
   };
   const weight_percentage_query = `
     SELECT weight * rep AS weight, (
-      SELECT major_target
+      SELECT body_region
       FROM motion
       WHERE motion_id IN (
         SELECT motion_id
