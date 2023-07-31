@@ -8,7 +8,7 @@ const Packet = function (packet) {
 }
 
 Packet.load = function(record_id, callback){
-    const sql = 'SELECT * FROM packet WHERE record_id = ?';
+    const sql = 'SELECT * FROM packet WHERE record_id = ? ORDER by time';
     db.all(sql, record_id, (err, rows) => {
         if(err) console.error(err.message);
         else callback(null, rows);
@@ -17,10 +17,12 @@ Packet.load = function(record_id, callback){
 
 Packet.save = function(record_id, time, left, right, callback){
     const sql = 'INSERT INTO packet (record_id, time, left, right) values (?,?,?,?)';
-    db.run(sql, [record_id, time, left, right], function(err, result){
-        if(err) console.error(err.message);
-        else callback(null, result);
-    });
+    for(let i = 0; i<time.length; i++){
+        db.run(sql, [record_id, time[i], left[i], right[i]], function(err, result){
+            if(err) console.error(err.message);
+            else callback(null, result);
+        });
+    } 
 };
 
 module.exports = Packet;
