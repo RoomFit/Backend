@@ -13,6 +13,7 @@ const post_feed = (req, res) => {
     created_at: current_date,
     updated_at: current_date,
     like_count: 0,
+    category: req.body.category,
   });
 
   Feed.create(new_feed, (err, id) => {
@@ -117,6 +118,9 @@ const post_comment = (req, res) => {
 
 const delete_feed = (req, res) => {
   const feed_id = req.query.feed_id;
+
+  console.log(feed_id);
+
   Feed.deleteFeed(feed_id, (err, data) => {
     if (err)
       res.status(500).send({
