@@ -282,8 +282,8 @@ Workout.stat = (user_id, period, callback) => {
     back: 0,
     chest: 0,
     core: 0,
-    forearm: 0,
-    upper_arm: 0,
+    bicep: 0,
+    tricep: 0,
     leg: 0,
     etc: 0,
   };
@@ -298,13 +298,13 @@ Workout.stat = (user_id, period, callback) => {
       weight += row.weight;
       const len = target_arr.length;
       for (tar of target_arr) {
-        if (tar == 'Waist') percent.core += row.weight / len;
-        else if (tar == 'Chest') percent.chest += row.weight / len;
-        else if (tar == 'Shoulders') percent.shoulder += row.weight / len;
-        else if (tar == 'Back') percent.back += row.weight / len;
-        else if (tar == 'Leg') percent.leg += row.weight / len;
-        else if (tar == 'Forearms') percent.forearm += row.weight / len;
-        else if (tar == 'Upper Arms') percent.upper_arm += row.weight / len;
+        if (tar == '코어') percent.core += row.weight / len;
+        else if (tar == '가슴') percent.chest += row.weight / len;
+        else if (tar == '어깨') percent.shoulder += row.weight / len;
+        else if (tar == '등') percent.back += row.weight / len;
+        else if (tar == '하체') percent.leg += row.weight / len;
+        else if (tar == '이두') percent.bicep += row.weight / len;
+        else if (tar == '삼두') percent.tricep += row.weight / len;
         else percent.etc += row.weight / len;
       }
     }
