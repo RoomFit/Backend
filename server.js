@@ -13,6 +13,7 @@ const set = require('./routes/set_routes');
 const motion = require('./routes/motion_routes');
 const routine = require('./routes/routine_routes');
 const community = require('./routes/community_routes');
+const packet = require('./routes/packet_routes');
 
 //router settings
 app.use('/workout', workout);
@@ -22,6 +23,7 @@ app.use('/account', account);
 app.use('/motion', motion);
 app.use('/routine', routine);
 app.use('/community', community);
+app.use('/packet', packet);
 
 const port = 4000;
 app.listen(port, () => {
