@@ -20,7 +20,9 @@ const save_packet = (req, res) => {
                 .status(500)
                 .send({message: 'Some error occurred while saving packets'});
         }
+        console.log("...");
         res.json(data);
+        
     });
 }
 

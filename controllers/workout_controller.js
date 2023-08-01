@@ -28,7 +28,6 @@ const create_workout = (req, res) => {
 const update_workout = (req, res) => {
   if (!req.body.workout_id)
     res.status(400).send({message: 'ID can not be empty'});
-
   const new_workout = {
     user_id: req.body.user_id,
     workout_id: req.body.workout_id,

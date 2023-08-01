@@ -20,9 +20,12 @@ Packet.save = function(record_id, time, left, right, callback){
     for(let i = 0; i<time.length; i++){
         db.run(sql, [record_id, time[i], left[i], right[i]], function(err, result){
             if(err) console.error(err.message);
-            else callback(null, result);
+            else {
+                
+            }
         });
     } 
+    callback(null, "good");
 };
 
 module.exports = Packet;

@@ -310,7 +310,7 @@ Workout.stat = (user_id, period, callback) => {
     }
 
     Object.keys(percent).forEach(key => {
-      percent[key] = (percent[key] / weight) * 100;
+      percent[key] = parseInt((percent[key] / weight) * 100);
     });
 
     const data = {total_weight: weight, percentage: percent};
