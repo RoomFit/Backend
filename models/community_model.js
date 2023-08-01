@@ -37,36 +37,70 @@ Feed.create = (new_feed, callback) => {
   });
 };
 
-Feed.getAll = (user_id, callback) => {
-  db.serialize(() => {
-    db.all(
-      `SELECT
-        feed.feed_id,
-        feed.feed_content,
-        feed.image_url,
-        feed.created_at,
-        feed.updated_at,
-        feed.like_count,
-        feed.user_id,
-        feed.category,
-        user.user_name,
-        CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like,
-        (SELECT COUNT(*) FROM comment WHERE comment.feed_id = feed.feed_id) AS comment_count
-      FROM feed
-      JOIN user ON feed.user_id = user.user_id
-      LEFT JOIN likes ON feed.feed_id = likes.feed_id AND likes.user_id = ?`,
-      [user_id],
-      (err, rows) => {
-        if (err) {
-          console.log('error: ', err);
-          callback(err, null);
-        } else {
-          console.log(rows);
-          callback(null, rows);
-        }
-      },
-    );
-  });
+Feed.getAll = (user_id, category, callback) => {
+  if (category) {
+    db.serialize(() => {
+      db.all(
+        `SELECT
+          feed.feed_id,
+          feed.feed_content,
+          feed.image_url,
+          feed.created_at,
+          feed.updated_at,
+          feed.like_count,
+          feed.user_id,
+          feed.category,
+          user.user_name,
+          CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like,
+          (SELECT COUNT(*) FROM comment WHERE comment.feed_id = feed.feed_id) AS comment_count
+        FROM feed
+        JOIN user ON feed.user_id = user.user_id
+        LEFT JOIN likes ON feed.feed_id = likes.feed_id AND likes.user_id = ?
+        WHWHERE feed.category = ?
+        `,
+        [user_id],
+        (err, rows) => {
+          if (err) {
+            console.log('error: ', err);
+            callback(err, null);
+          } else {
+            console.log(rows);
+            callback(null, rows);
+          }
+        },
+      );
+    });
+  } else {
+    db.serialize(() => {
+      db.all(
+        `SELECT
+          feed.feed_id,
+          feed.feed_content,
+          feed.image_url,
+          feed.created_at,
+          feed.updated_at,
+          feed.like_count,
+          feed.user_id,
+          feed.category,
+          user.user_name,
+          CASE WHEN likes.feed_id IS NOT NULL THEN 1 ELSE 0 END AS is_like,
+          (SELECT COUNT(*) FROM comment WHERE comment.feed_id = feed.feed_id) AS comment_count
+        FROM feed
+        JOIN user ON feed.user_id = user.user_id
+        LEFT JOIN likes ON feed.feed_id = likes.feed_id AND likes.user_id = ?`,
+        [user_id],
+        (err, rows) => {
+          if (err) {
+            console.log('error: ', err);
+            callback(err, null);
+          } else {
+            console.log(rows);
+            callback(null, rows);
+          }
+        },
+      );
+    });
+  }
 };
 
 Feed.like = (feed_id, user_id, callback) => {
