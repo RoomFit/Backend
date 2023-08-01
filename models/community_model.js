@@ -56,9 +56,9 @@ Feed.getAll = (user_id, category, callback) => {
         FROM feed
         JOIN user ON feed.user_id = user.user_id
         LEFT JOIN likes ON feed.feed_id = likes.feed_id AND likes.user_id = ?
-        WHWHERE feed.category = ?
+        WHERE feed.category = ?
         `,
-        [user_id],
+        [user_id, category],
         (err, rows) => {
           if (err) {
             console.log('error: ', err);
