@@ -35,13 +35,16 @@ Account.create = (new_user, callback) => {
 
       if (row) {
         // 이미 존재하는 user_id 또는 email인 경우 에러를 반환
-        let error = new Error();
+        //let error = new Error();
+        let e = 0;
         if (row.user_id === user_id) {
-          error.message = '이미 사용 중인 ID입니다.';
+          //error.message = '이미 사용 중인 ID입니다.';
+          e = 1; // ID 중복인 경우
         } else if (row.email === email) {
-          error.message = '이미 사용 중인 이메일입니다.';
+          //error.message = '이미 사용 중인 이메일입니다.';
+          e = 2; // 이메일 중복인 경우
         }
-        callback(error);
+        callback(e);
         return;
       }
 
@@ -159,16 +162,16 @@ Account.login = (user, callback) => {
       }
 
       if (!row) {
-        let error = new Error();
-        error.message = '존재하지 않는 이메일입니다.';
-        callback(error);
+        //let error = new Error();
+        //error.message = '존재하지 않는 이메일입니다.';
+        callback(1);
         return;
       }
 
       if (row.password !== password) {
-        let error = new Error();
-        error.message = '비밀번호가 일치하지 않습니다.';
-        callback(error);
+        //let error = new Error();
+        //error.message = '비밀번호가 일치하지 않습니다.';
+        callback(2);
         return;
       } else {
         console.log(row);
