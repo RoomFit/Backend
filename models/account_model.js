@@ -24,8 +24,8 @@ Account.create = (new_user, callback) => {
 
   // 중복 체크를 위해 user_id와 email을 검색
   db.get(
-    `SELECT user_id, email FROM User WHERE email = ?`,
-    [email],
+    `SELECT user_id, email FROM User WHERE user_id = ?`,
+    [user_id],
     function (err, row) {
       if (err) {
         console.error(err);
@@ -534,5 +534,25 @@ Account.user_info = (user_id, callback) => {
     },
   );
 };
+
+Account.check_email = (email, callback) => {
+  db.get(
+    `SELECT * FROM user WHERE email = ?`,
+    [email],
+    function(err, row) {
+      if(err) {
+        console.error(err);
+        callback(err);
+        return;
+      }
+      if(row){
+        callback(null, 0);
+      }
+      else{
+        callback(null, 1);
+      }
+    }
+  )
+}
 
 module.exports = Account;

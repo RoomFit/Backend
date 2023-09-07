@@ -287,6 +287,20 @@ const user_info = (req, res) => {
   });
 };
 
+const check_email = (req, res) => {
+  const user_email = req.body.email;
+  Account.check_email(user_email, (err, is_duplication) => {
+    if (err)
+      res.status(500).send({
+        message: 'Some error occurred check email.',
+        success: 0,
+      });
+    else{
+      res.json({is_duplication: is_duplication, });
+    }
+  });
+};
+
 module.exports = {
   email_register,
   account_update,
@@ -300,4 +314,5 @@ module.exports = {
   find_password,
   change_password,
   user_info,
+  check_email,
 };
