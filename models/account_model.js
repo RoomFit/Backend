@@ -162,14 +162,9 @@ Account.login = (user, callback) => {
       }
 
       if (!row) {
-        //let error = new Error();
-        //error.message = '존재하지 않는 이메일입니다.';
-        callback(null, {
-          user_id: row.user_id,
-          user_name: row.user_name,
-          email: row.email,
-          success: -1,
-        });
+        let error = new Error();
+        error.message = '존재하지 않는 이메일입니다.';
+        callback(error);
         return;
       }
 
