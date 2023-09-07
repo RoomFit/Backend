@@ -24,8 +24,8 @@ Account.create = (new_user, callback) => {
 
   // 중복 체크를 위해 user_id와 email을 검색
   db.get(
-    `SELECT user_id, email FROM User WHERE user_id = ? OR email = ?`,
-    [user_id, email],
+    `SELECT user_id, email FROM User WHERE email = ?`,
+    [email],
     function (err, row) {
       if (err) {
         console.error(err);
@@ -39,12 +39,12 @@ Account.create = (new_user, callback) => {
         let e = 0;
         if (row.user_id === user_id) {
           //error.message = '이미 사용 중인 ID입니다.';
-          e = 1; // ID 중복인 경우
+          e = -1; // ID 중복인 경우
         } else if (row.email === email) {
           //error.message = '이미 사용 중인 이메일입니다.';
-          e = 2; // 이메일 중복인 경우
+          e = -2; // 이메일 중복인 경우
         }
-        callback(e);
+        callback(null, e);
         return;
       }
 
@@ -58,7 +58,7 @@ Account.create = (new_user, callback) => {
             callback(err);
             return;
           }
-          callback(null, this.lastID);
+          callback(null, 1);
         },
       );
     },

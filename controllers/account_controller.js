@@ -14,7 +14,7 @@ const email_register = (req, res) => {
     is_api: 0,
   });
 
-  Account.create(account, (err, id) => {
+  Account.create(account, (err, is_success) => {
     if (err)
       res.status(500).send({
         message: err.message || 'Some error occurred while creating Account.',
@@ -25,7 +25,7 @@ const email_register = (req, res) => {
         user_id: account.user_id,
         user_name: account.user_name,
         email: account.email,
-        success: 1,
+        success: is_success,
       });
     }
   });
