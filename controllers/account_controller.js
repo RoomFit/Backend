@@ -87,7 +87,7 @@ const account_login = (req, res) => {
         user_id: data.user_id,
         user_name: data.user_name,
         email: data.email,
-        success: 1,
+        success: data.success,
       });
     }
   });

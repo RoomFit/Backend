@@ -164,14 +164,24 @@ Account.login = (user, callback) => {
       if (!row) {
         //let error = new Error();
         //error.message = '존재하지 않는 이메일입니다.';
-        callback(1);
+        callback(null, {
+          user_id: row.user_id,
+          user_name: row.user_name,
+          email: row.email,
+          success: -1,
+        });
         return;
       }
 
       if (row.password !== password) {
         //let error = new Error();
         //error.message = '비밀번호가 일치하지 않습니다.';
-        callback(2);
+        callback(null, {
+          user_id: row.user_id,
+          user_name: row.user_name,
+          email: row.email,
+          success: -2,
+        });
         return;
       } else {
         console.log(row);
@@ -179,6 +189,7 @@ Account.login = (user, callback) => {
           user_id: row.user_id,
           user_name: row.user_name,
           email: row.email,
+          success: 1,
         });
       }
     },
