@@ -41,5 +41,7 @@ router.get('/find-password', account_controller.find_password);
 router.post('/email-verification', account_controller.email_verification);
 router.put('/change_password', account_controller.change_password);
 router.get('/user-info', account_controller.user_info);
+router.post('/email-duplication', account_controller.check_email);
+
 
 module.exports = router;
