@@ -258,7 +258,7 @@ Account.google_auth = (user, callback) => {
               callback(err);
               return;
             }
-            callback(null, this.lastID, 1);
+            callback(null, this.lastID, 0);
             return;
           })
         } 
