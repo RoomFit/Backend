@@ -237,12 +237,12 @@ Account.login = (user, callback) => {
 // };
 
 Account.google_auth = (user, callback) => {
-  const {user_id, user_name, user_email, is_api} = user;
+  const {user_id, user_name, email, is_api} = user;
 
   // 중복 체크를 위해 user_id와 email을 검색
   db.get(
     `SELECT user_id, email,is_api FROM User WHERE user_id = ? OR email = ?`,
-    [user_id, user_email],
+    [user_id, email],
     function (err, row) {
       if (err) {
         console.error(err);
@@ -257,9 +257,9 @@ Account.google_auth = (user, callback) => {
           callback(null, this.lastID, 0);
           return;
         }
-        else if (row.is_api === 0 && row.email === user_email) {
+        else if (row.is_api === 0 && row.email === email) {
           const sql = `UPDATE user SET is_api = 1 WHERE email = ?`;
-          db.run(sql, [user_email], function(err){
+          db.run(sql, [email], function(err){
             if(err){
               callback(err);
               return;
@@ -279,7 +279,7 @@ Account.google_auth = (user, callback) => {
       // 중복된 ID나 이메일이 없는 경우 새로운 사용자를 생성
       db.run(
         `INSERT INTO User (user_id, user_name, email, is_api) VALUES (?,?,?,?)`,
-        [user_id, user_name, user_email, is_api],
+        [user_id, user_name, email, is_api],
         function (err) {
           if (err) {
             console.error(err);
