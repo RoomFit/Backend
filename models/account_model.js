@@ -249,7 +249,6 @@ Account.google_auth = (user, callback) => {
         callback(err);
         return;
       }
-
       if (row) {
         console.log(row);
         console.log(row.is_api);
