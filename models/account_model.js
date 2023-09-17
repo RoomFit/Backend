@@ -279,7 +279,7 @@ Account.google_auth = (user, callback) => {
       // 중복된 ID나 이메일이 없는 경우 새로운 사용자를 생성
       db.run(
         `INSERT INTO User (user_id, user_name, email, is_api) VALUES (?,?,?,?)`,
-        [user_id, user_name, email, is_api],
+        [user_id, user_name, user_email, is_api],
         function (err) {
           if (err) {
             console.error(err);
