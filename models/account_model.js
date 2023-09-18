@@ -554,4 +554,12 @@ Account.check_email = (email, callback) => {
   )
 }
 
+Account.withdraw = (user_id, callback) => {
+  const sql = 'DELETE FROM user where user_id =?';
+  db.run(sql, [user_id], function (err, result) {
+    if (err) console.error(err.message);
+    else callback(null, 1);
+  });
+};
+
 module.exports = Account;

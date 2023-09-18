@@ -301,6 +301,20 @@ const check_email = (req, res) => {
   });
 };
 
+const withdraw = (req, res) => {
+  const user_id = req.body.user_id;
+  Account.withdraw(user_id, (err, success) => {
+    if (err)
+      res.status(500).send({
+        message: 'Some error occurred withdraw user.',
+        success: 0,
+      });
+    else{
+      res.json({success: success, });
+    }
+  })
+}
+
 module.exports = {
   email_register,
   account_update,
@@ -315,4 +329,5 @@ module.exports = {
   change_password,
   user_info,
   check_email,
+  withdraw,
 };
