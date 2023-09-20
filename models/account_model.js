@@ -253,8 +253,8 @@ Account.google_auth = (user, callback) => {
       if (row) {
         console.log(row);
         console.log(row.is_api);
-        if (row.is_api == 1) {
-          callback(null, this.lastID, 0);
+        if (row.is_api === 1) {
+          callback(null, row.user_id, 0);
           return;
         }
         else if (row.is_api === 0 && row.email === email) {
@@ -264,7 +264,7 @@ Account.google_auth = (user, callback) => {
               callback(err);
               return;
             }
-            callback(null, this.lastID, 0);
+            callback(null, row.user_id, 0);
             return;
           })
         } 
