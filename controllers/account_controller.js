@@ -145,7 +145,7 @@ const google_auth_redirect = async (req, res) => {
       });
     else {
       res.json({
-        user_id: account.user_id,
+        user_id: id,
         success: 1,
         isRegister: isRegister,
       });
@@ -174,7 +174,7 @@ const google_auth_passport = async (req, res) => {
         `memcaps://account/google_auth?message=${message}/success=${success}`,
       );
     } else {
-      const user_id = account.user_id;
+      const user_id = id;
       const success = 1;
       res.redirect(
         `memcaps://account/google_auth?user_id=${user_id}/success=${success}/isRegister=${isRegister}/email=${account.email}`,
