@@ -147,14 +147,14 @@ Routine.detail = function (routine_id, callback) {
                   if (err) {
                     console.error(err);
                   } else {
-                    console.log(motion_range);
+                    //console.log(motion_range);
                     list.motion_range_min = motion_range?motion_range.motion_range_min:-1;
                     list.motion_range_max = motion_range?motion_range.motion_range_max:-1;
                     count++;
-                    console.log(datas.motionList.length);
-                    console.log(count);
+                    //console.log(datas.motionList.length);
+                    //console.log(count);
                     if(count==datas.motionList.length){
-                      console.log(datas);
+                      //console.log(datas);
                       callback(null,datas);
                     }
                   }

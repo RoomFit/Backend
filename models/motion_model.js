@@ -77,13 +77,13 @@ Motion.load = function (user_id, callback) {
           const notFavMotionList = await Promise.all(
             notFavRows.map(fetchMotionRange),
           );
-          console.log(favMotionList);
-          console.log(notFavMotionList);
+          //console.log(favMotionList);
+          //console.log(notFavMotionList);
           const motionList = [
             ...favMotionList.map(row => ({...row, isFav: true})),
             ...notFavMotionList.map(row => ({...row, isFav: false})),
           ];
-          console.log(motionList);
+          //console.log(motionList);
           callback(null, motionList);
         } catch (err) {
           console.error(err);
@@ -212,7 +212,6 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
               sqlNotFav +=` AND grip IN (${gripHolder})`
             }
             sqlNotFav+=` ORDER BY count desc`;
-            console.log("?");
             const notFavRows = await new Promise((resolve, reject) => {
               if(fav!=='즐겨찾기') {
                 
@@ -287,7 +286,7 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
               ...notFavMotionList.map(row => ({...row, isFav: false})),
             ];
 
-            console.log(motionList);
+            //console.log(motionList);
             callback(null, motionList);
           } catch (err) {
             console.error(err);
@@ -484,7 +483,7 @@ Motion.search_motion = function (user_id, motion_name, grip, body_region, callba
             const motionList = await Promise.all(
               tempMotionList.map(fetchMotionRange),
             );
-            console.log(motionList);
+            //console.log(motionList);
             callback(null, motionList);
           } catch (err) {
             console.error(err);

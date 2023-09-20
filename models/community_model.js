@@ -12,7 +12,7 @@ const Feed = function (feed) {
 };
 
 Feed.create = (new_feed, callback) => {
-  console.log(new_feed);
+  //console.log(new_feed);
   const sql = 'INSERT INTO favorite (user_id, motion_id) values (?,?)';
   db.serialize(() => {
     db.run(
@@ -64,7 +64,7 @@ Feed.getAll = (user_id, category, callback) => {
             console.log('error: ', err);
             callback(err, null);
           } else {
-            console.log(rows);
+            //console.log(rows);
             callback(null, rows);
           }
         },
@@ -94,7 +94,7 @@ Feed.getAll = (user_id, category, callback) => {
             console.log('error: ', err);
             callback(err, null);
           } else {
-            console.log(rows);
+            //console.log(rows);
             callback(null, rows);
           }
         },

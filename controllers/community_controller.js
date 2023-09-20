@@ -2,8 +2,8 @@ const Feed = require('../models/community_model');
 const upload = require('../config/multer');
 
 const post_feed = (req, res) => {
-  console.log(req.body.content);
-  console.log(req.body.user_id);
+  //console.log(req.body.content);
+  //console.log(req.body.user_id);
 
   const current_date = new Date().toLocaleString();
   const new_feed = new Feed({
@@ -121,7 +121,7 @@ const post_comment = (req, res) => {
 const delete_feed = (req, res) => {
   const feed_id = req.query.feed_id;
 
-  console.log(feed_id);
+  //console.log(feed_id);
 
   Feed.deleteFeed(feed_id, (err, data) => {
     if (err)

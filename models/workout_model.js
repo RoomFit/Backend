@@ -73,7 +73,7 @@ Workout.update = (new_workout, callback) => {
               const target_arr = JSON.parse(rows[i].targets).join(', ').split(', ');
               rows[i].targets = [...new Set(target_arr)];
             }
-            console.log(rows);
+            //console.log(rows);
             callback(null, rows);
           }
         });
@@ -221,7 +221,7 @@ Workout.calender_date = (user_id, date, callback) => {
         const target_arr = JSON.parse(rows[i].targets).join(', ').split(', ');
         rows[i].targets = [...new Set(target_arr)];
       }
-      console.log(rows);
+      //console.log(rows);
       callback(null, rows);
     }
   });
@@ -233,7 +233,7 @@ Workout.calender_month = (user_id, month, callback) => {
   const sql = `SELECT start_time FROM workout WHERE user_id = ? AND start_time>= ? AND start_time <= ? AND end_time != ''`;
   db.all(sql, [user_id, startDate, endDate], (err, rows) => {
     if (err) console.error(err);
-    console.log(rows);
+    //console.log(rows);
     callback(rows);
   });
 };
