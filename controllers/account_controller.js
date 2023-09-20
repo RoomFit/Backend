@@ -49,7 +49,7 @@ const account_update = (req, res) => {
     set_break: req.body.set_break || undefined,
     motion_break: req.body.motion_break || undefined,
   });
-  console.log(update_account);
+  //(update_account);
   Account.update(update_account, (err, user_data) => {
     if (err)
       res.status(500).send({
@@ -82,7 +82,7 @@ const account_login = (req, res) => {
         success: 0,
       });
     else {
-      console.log(data);
+      //console.log(data);
       res.json({
         user_id: data.user_id,
         user_name: data.user_name,
