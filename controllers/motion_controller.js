@@ -73,6 +73,16 @@ const custom_motions = (req, res) => {
   });
 }
 
+const del_custom = (req, res) => {
+  if(!req.body) res.status(400).send({message: 'Content can not be empty'});
+  Motion.del_custom(req.body, (err, data) => {
+    if(err){
+      res.status(500).send({message: 'Some error occurred while deleting motions'});
+    }
+    res.json(data);
+  });
+}
+
 module.exports = {
   load_motions,
   add_fav_motion,
@@ -80,4 +90,5 @@ module.exports = {
   add_motions,
   search_motions,
   custom_motions,
+  del_custom,
 };
