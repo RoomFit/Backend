@@ -241,8 +241,8 @@ Account.google_auth = (user, callback) => {
 
   // 중복 체크를 위해 user_id와 email을 검색
   db.get(
-    `SELECT user_id, email,is_api FROM User WHERE user_id = ? OR email = ?`,
-    [user_id, email],
+    `SELECT user_id, email,is_api FROM User WHERE email = ?`,
+    [email],
     function (err, row) {
       if (err) {
         console.error(err);
