@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS user (
     weight INTEGER,
     experience INTEGER,
     body_fat INTEGER,
-
+    uri TEXT DEFAULT NULL,
     set_break INTEGER,
     motion_break INTEGER
 );
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS motion (
     image_url TEXT DEFAULT NULL,
     description TEXT NOT NULL,
     count INTEGER DEFAULT 0 NOT NULL,
-
+    custom INTEGER DEFAULT 0 NOT NULL,
     user_id TEXT REFERENCES user(user_id) ON DELETE CASCADE DEFAULT NULL
 );
 
@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS motion_range(
     motion_id INTEGER NOT NULL,
     motion_range_min INTEGER,
     motion_range_max INTEGER,
+    motion_range_status TEXT DEFAULT "off",
 
     FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE
     FOREIGN KEY(motion_id) REFERENCES motion(motion_id) ON DELETE CASCADE 
