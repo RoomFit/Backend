@@ -124,6 +124,7 @@ Routine.detail = function (routine_id, callback) {
                 sets: [],
                 motion_range_min: -1,
                 motion_range_max: -1,
+                motion_range_status: "off",
               });
             }
 
@@ -142,7 +143,7 @@ Routine.detail = function (routine_id, callback) {
             if (rowCount === rows.length){
               let count = 0;
               datas.motionList.forEach(list => {
-                const sqlMotionRange = `SELECT motion_range_min, motion_range_max FROM motion_range WHERE motion_id = ? AND user_id = ?`;
+                const sqlMotionRange = `SELECT motion_range_min, motion_range_max motion_range_status FROM motion_range WHERE motion_id = ? AND user_id = ?`;
                 db.get(sqlMotionRange, [list.motion_id, row.user_id], (err, motion_range) => {
                   if (err) {
                     console.error(err);
@@ -150,6 +151,7 @@ Routine.detail = function (routine_id, callback) {
                     //console.log(motion_range);
                     list.motion_range_min = motion_range?motion_range.motion_range_min:-1;
                     list.motion_range_max = motion_range?motion_range.motion_range_max:-1;
+                    list.motion_range_status = motion_range?motion_range.motion_range_status:"off";
                     count++;
                     //console.log(datas.motionList.length);
                     //console.log(count);
@@ -233,16 +235,16 @@ Routine.save = function (user_id,routine_id, motion_list, callback) {
     const checkData = `SELECT * FROM motion_range WHERE user_id = ? AND motion_id = ?`;
     db.get(checkData, [user_id,motion_list[i].motion_id], (err, row)=>{
       if(row){
-        const sqlUpdate = `UPDATE motion_range SET motion_range_min = ?, motion_range_max = ? WHERE motion_id = ? AND user_id = ?`;
-        db.run(sqlUpdate, [motion_list[i].motion_range_min, motion_list[i].motion_range_max, motion_list[i].motion_id, user_id], (err)=>{
+        const sqlUpdate = `UPDATE motion_range SET motion_range_min = ?, motion_range_max = ?, motion_range_status = ? WHERE motion_id = ? AND user_id = ?`;
+        db.run(sqlUpdate, [motion_list[i].motion_range_min, motion_list[i].motion_range_max, motion_list[i].motion_range_status, motion_list[i].motion_id, user_id], (err)=>{
           if(err){
             console.error(err);
           }
         })
       }
       else{
-        const sqlInsert = `INSERT INTO motion_range (user_id, motion_id, motion_range_min, motion_range_max) VALUES (?,?,?,?)`;
-        db.run(sqlInsert,[user_id,motion_list[i].motion_id,motion_list[i].motion_range_min,motion_list[i].motion_range_max],(err)=>{
+        const sqlInsert = `INSERT INTO motion_range (user_id, motion_id, motion_range_min, motion_range_max, motion_range_status) VALUES (?,?,?,?,?)`;
+        db.run(sqlInsert,[user_id,motion_list[i].motion_id,motion_list[i].motion_range_min,motion_list[i].motion_range_max, motion_list[i].motion_range_status],(err)=>{
           if(err){
             console.error(err);
           }

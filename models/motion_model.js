@@ -47,7 +47,7 @@ Motion.load = function (user_id, callback) {
             );
           });
           const fetchMotionRange = async row => {
-            const sqlMotionRange = `SELECT motion_range_min, motion_range_max FROM motion_range WHERE motion_id = ? AND user_id = ?`;
+            const sqlMotionRange = `SELECT motion_range_min, motion_range_max, motion_range_status FROM motion_range WHERE motion_id = ? AND user_id = ?`;
             const motion_range = await new Promise((resolve, reject) => {
               db.get(
                 sqlMotionRange,
@@ -69,6 +69,9 @@ Motion.load = function (user_id, callback) {
               motion_range_max: motion_range
                 ? motion_range.motion_range_max
                 : -1,
+              motion_range_status: motion_range
+                ? motion_range.motion_range_status
+                : "off",
             };
           };
           const favMotionList = await Promise.all(
@@ -113,7 +116,7 @@ Motion.del_fav = function (user_id, motion_id, callback) {
 
 Motion.custom_motion = function (body, callback) {
   const sql =
-    'INSERT INTO motion (user_id, motion_name, motion_english_name,body_region,sub_muscle,sequence,grip,description) values (?,?,?,?,?,?,?,?)';
+    'INSERT INTO motion (user_id, motion_name, motion_english_name,body_region,sub_muscle,sequence,grip,description,custom) values (?,?,?,?,?,?,?,?,?)';
   db.run(
     sql,
     [
@@ -125,6 +128,7 @@ Motion.custom_motion = function (body, callback) {
       body.sequence,
       body.grip,
       body.description,
+      1,
     ],
     function (err, result) {
       if (err) console.error(err.message);
