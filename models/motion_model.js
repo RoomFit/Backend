@@ -116,7 +116,7 @@ Motion.del_fav = function (user_id, motion_id, callback) {
 
 Motion.custom_motion = function (body, callback) {
   const sql =
-    'INSERT INTO motion (user_id, motion_name, motion_english_name,body_region,sub_muscle,sequence,grip,description) values (?,?,?,?,?,?,?,?)';
+    'INSERT INTO motion (user_id, motion_name, motion_english_name,body_region,sub_muscle,sequence,grip,description,custom) values (?,?,?,?,?,?,?,?,?)';
   db.run(
     sql,
     [
@@ -128,6 +128,7 @@ Motion.custom_motion = function (body, callback) {
       body.sequence,
       body.grip,
       body.description,
+      1,
     ],
     function (err, result) {
       if (err) console.error(err.message);
