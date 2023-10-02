@@ -562,4 +562,16 @@ Account.withdraw = (user_id, callback) => {
   });
 };
 
+Account.profile = (user_id, location, callback) => {
+  const sql = `UPDATE user SET uri = ? WHERE user_id = ?`;
+    db.run(sql, [location, user_id], function(err){
+      if(err){
+        callback(err);
+        return;
+      }
+      callback(null, location);
+      return;
+    })
+}
+
 module.exports = Account;

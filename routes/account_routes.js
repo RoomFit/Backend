@@ -43,5 +43,10 @@ router.put('/change_password', account_controller.change_password);
 router.get('/user-info', account_controller.user_info);
 router.post('/email-duplication', account_controller.check_email);
 router.post('/withdraw', account_controller.withdraw);
+router.post(
+  '/profile',
+  upload.single('profile'),
+  account_controller.profile,
+);
 
 module.exports = router;

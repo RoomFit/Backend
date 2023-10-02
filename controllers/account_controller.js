@@ -315,6 +315,19 @@ const withdraw = (req, res) => {
   })
 }
 
+const profile = (req, res) => {
+  Account.profile(req.body.user_id, req.file.location, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: 'Some error occurred profile.',
+        success: 0,
+      });
+    else{
+      res.json({uri: data, });
+    }
+  })
+}
+
 module.exports = {
   email_register,
   account_update,
@@ -330,4 +343,5 @@ module.exports = {
   user_info,
   check_email,
   withdraw,
+  profile,
 };
