@@ -578,7 +578,7 @@ Account.profile = (user_id, location, callback) => {
     })
 }
 
-Account.save_motion_percent = (user_id, range_percent, measure_count, callback) => {
+Account.save_motion_percents = (user_id, range_percent, measure_count, callback) => {
   const sql = 'UPDATE user SET range_percent = ?, measure_count = ? WHERE user_id = ?';
   db.run(sql, [range_percent, measure_count, user_id], function(err){
     if(err){
@@ -590,7 +590,7 @@ Account.save_motion_percent = (user_id, range_percent, measure_count, callback) 
   })
 }
 
-Account.load_range_percent = (user_id, callback) => {
+Account.load_range_percents = (user_id, callback) => {
   const sql = 'SELECT range_percent from user where user_id = ?';
   db.get(
     sql,
@@ -606,7 +606,7 @@ Account.load_range_percent = (user_id, callback) => {
   )
 }
 
-Account.load_measure_count = (user_id, callback) => {
+Account.load_measure_counts = (user_id, callback) => {
   const sql = 'SELECT measure_count from user where user_id = ?';
   db.get(
     sql,
