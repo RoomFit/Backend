@@ -1,5 +1,5 @@
 const Account = require('../models/account_model');
-
+const upload = require('../config/multer');
 const email_register = (req, res) => {
   if (!req.body)
     res.status(400).send({
@@ -328,6 +328,45 @@ const profile = (req, res) => {
   })
 }
 
+const save_range_percent = (req, res) => {
+  Account.save_range_percent = (req.body.user_id, req.body.range_percent, req.body.measure_count, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: 'Some error occurred.',
+        success: 0,
+      });
+    else{
+      res.json(1);
+    }
+  })
+}
+
+const load_range_percent = (req, res) => {
+  Account.load_range_percent = (req.body.user_id, (err,data) => {
+    if (err)
+      res.status(500).send({
+        message: 'Some error occurred.',
+        success: 0,
+      });
+    else{
+      res.json(data);
+    }
+  })
+}
+
+const load_measure_count = (req,res)=> {
+  Account.load_measure_count = (req.body.user_id, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: 'Some error occurred.',
+        success: 0,
+      });
+    else{
+      res.json(data);
+    }
+  })
+}
+
 module.exports = {
   email_register,
   account_update,
@@ -344,4 +383,7 @@ module.exports = {
   check_email,
   withdraw,
   profile,
+  save_range_percent,
+  load_range_percent,
+  load_measure_count,
 };

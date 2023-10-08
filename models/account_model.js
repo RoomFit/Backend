@@ -16,6 +16,9 @@ const Account = function (user) {
   this.body_fat = user.body_fat;
   this.set_break= user.set_break;
   this.motion_break= user.motion_break;
+  this.uri = user.uri;
+  this.motion_percent = user.motion_percent;
+  this.measure_count = user.measure_count;
 };
 
 //Create User in email create mode
@@ -572,6 +575,50 @@ Account.profile = (user_id, location, callback) => {
       callback(null, location);
       return;
     })
+}
+
+Account.save_motion_percent = (user_id, range_percent, measure_count, callback) => {
+  const sql = 'UPDATE user SET range_percent = ?, measure_count = ? WHERE user_id = ?';
+  db.run(sql, [range_percent, measure_count, user_id], function(err){
+    if(err){
+      callback(err);
+      return;
+    }
+    callback(null, 1);
+    return;
+  })
+}
+
+Account.load_range_percent = (user_id, callback) => {
+  const sql = 'SELECT range_percent from user where user_id = ?';
+  db.get(
+    sql,
+    [user_id],
+    function(err, row) {
+      if(err) {
+        console.error(err);
+        callback(err);
+        return;
+      }
+      callback(row);
+    }
+  )
+}
+
+Account.load_measure_count = (user_id, callback) => {
+  const sql = 'SELECT measure_count from user where user_id = ?';
+  db.get(
+    sql,
+    [user_id],
+    function(err, row) {
+      if(err) {
+        console.error(err);
+        callback(err);
+        return;
+      }
+      callback(row);
+    }
+  )
 }
 
 module.exports = Account;
