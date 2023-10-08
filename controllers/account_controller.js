@@ -329,7 +329,7 @@ const profile = (req, res) => {
 }
 
 const save_range_percent = (req, res) => {
-  Account.save_range_percent = (req.body.user_id, req.body.range_percent, req.body.measure_count, (err, data) => {
+  Account.save_range_percent(req.body.user_id, req.body.range_percent, req.body.measure_count, (err, data) => {
     if (err)
       res.status(500).send({
         message: 'Some error occurred.',
@@ -342,7 +342,7 @@ const save_range_percent = (req, res) => {
 }
 
 const load_range_percent = (req, res) => {
-  Account.load_range_percent = (req.body.user_id, (err,data) => {
+  Account.load_range_percent(req.body.user_id, (err,data) => {
     if (err)
       res.status(500).send({
         message: 'Some error occurred.',
@@ -355,7 +355,7 @@ const load_range_percent = (req, res) => {
 }
 
 const load_measure_count = (req,res)=> {
-  Account.load_measure_count = (req.body.user_id, (err, data) => {
+  Account.load_measure_count(req.body.user_id, (err, data) => {
     if (err)
       res.status(500).send({
         message: 'Some error occurred.',

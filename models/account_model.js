@@ -17,7 +17,7 @@ const Account = function (user) {
   this.set_break= user.set_break;
   this.motion_break= user.motion_break;
   this.uri = user.uri;
-  this.motion_percent = user.motion_percent;
+  this.range_percent = user.range_percent;
   this.measure_count = user.measure_count;
 };
 
