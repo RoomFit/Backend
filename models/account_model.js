@@ -600,7 +600,7 @@ Account.load_range_percents = (user_id, callback) => {
         callback(err);
         return;
       }
-      callback(row);
+      callback(null, row);
     }
   )
 }
@@ -616,7 +616,7 @@ Account.load_measure_counts = (user_id, callback) => {
         callback(err);
         return;
       }
-      callback(row);
+      callback(null, row);
     }
   )
 }
