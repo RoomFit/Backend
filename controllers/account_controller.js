@@ -1,5 +1,5 @@
 const Account = require('../models/account_model');
-
+const upload = require('../config/multer');
 const email_register = (req, res) => {
   if (!req.body)
     res.status(400).send({
