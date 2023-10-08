@@ -49,5 +49,7 @@ router.post(
   upload.single('profile'),
   account_controller.profile,
 );
-
+router.post('/save_range_percent', account_controller.save_range_percent);
+router.post('/load_range_percent', account_controller.load_range_percent);
+router.post('/load_measure_count', account_controller.load_measure_count);
 module.exports = router;
