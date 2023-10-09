@@ -143,7 +143,7 @@ Routine.detail = function (routine_id, callback) {
             if (rowCount === rows.length){
               let count = 0;
               datas.motionList.forEach(list => {
-                const sqlMotionRange = `SELECT motion_range_min, motion_range_max motion_range_status FROM motion_range WHERE motion_id = ? AND user_id = ?`;
+                const sqlMotionRange = `SELECT motion_range_min, motion_range_max, motion_range_status FROM motion_range WHERE motion_id = ? AND user_id = ?`;
                 db.get(sqlMotionRange, [list.motion_id, row.user_id], (err, motion_range) => {
                   if (err) {
                     console.error(err);
