@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS user (
     body_fat INTEGER,
     uri TEXT DEFAULT NULL,
     set_break INTEGER,
-    motion_break INTEGER
+    motion_break INTEGER,
 );
 
 CREATE TABLE IF NOT EXISTS Feed (
